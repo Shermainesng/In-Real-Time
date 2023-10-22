@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const Poll = () => {
-  const options = ['Option 1', 'Option 2', 'Option 3']; // Replace with your poll options
+const Polls = () => {
+  const options = ["Option 1", "Option 2", "Option 3"]; // Replace with your poll options
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleOptionClick = (index) => {
@@ -16,7 +16,7 @@ const Poll = () => {
           <li
             key={index}
             onClick={() => handleOptionClick(index)}
-            className={selectedOption === index ? 'selected' : ''}
+            className={selectedOption === index ? "selected" : ""}
           >
             {option}
           </li>
@@ -29,4 +29,4 @@ const Poll = () => {
   );
 };
 
-export default Poll;
+export default Polls;

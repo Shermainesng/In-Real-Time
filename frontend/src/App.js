@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -10,49 +10,76 @@ import "bootstrap/dist/css/bootstrap.css";
 
 import Navigation from "./ui/Navbar";
 import Home from "./Home";
-import Polls from "./polls/pages/Polls";
+import Events from "./events/pages/Events";
 import NewPoll from "./polls/pages/NewPoll";
 import Auth from "./user/pages/Auth";
+import { AuthContext } from "./shared/context/auth-context";
 
 function App() {
-  // let routes;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [token, setToken] = useState(null);
+  const [userId, setUserId] = useState(false);
+  const [userName, setUserName] = useState(null);
 
-  // routes = (
-  //   <Routes>
-  //     <Route path="/" exact element={<Home />} />
-  //     <Route path="/about" element={<Home />} />
-  //     <Route path="/polls" element={<Polls />} />
-  //     <Route path="/polls/new" element={<NewPoll />} />
-  //     <Route path="/auth" element={<Auth />} />
-  //     <Redirect to="/" />
-  //   </Routes>
-  // );
+  const login = useCallback((userId, userName) => {
+    // setToken(token);
+    setIsLoggedIn(true);
+    setUserId(userId);
+    setUserName(userName);
+  }, []);
+  const logout = useCallback(() => {
+    // setToken(null);
+    setIsLoggedIn(false);
+    setUserId(null);
+  }, []);
+
+  let routes;
+
+  if (isLoggedIn) {
+    routes = (
+      <Switch>
+        <Route path="/" exact>
+          <Home />
+        </Route>
+        <Route path="/events" exact>
+          <Events />
+        </Route>
+        <Route path="/polls/new" exact>
+          <NewPoll />
+        </Route>
+        <Redirect to="/" />
+      </Switch>
+    );
+  } else {
+    routes = (
+      <Switch>
+        <Route path="/" exact>
+          <Home />
+        </Route>
+        <Route path="/auth" exact>
+          <Auth />
+        </Route>
+        <Redirect to="/auth" />
+      </Switch>
+    );
+  }
 
   return (
     <div className="App">
-      <Router>
-        <Navigation />
-        <Switch>
-          <Route path="/" exact>
-            <Home />
-          </Route>
-          <Route path="/about" exact>
-            <Home />
-          </Route>
-          <Route path="/polls" exact>
-            <Polls />
-          </Route>
-          <Route path="/polls/new" exact>
-            <NewPoll />
-          </Route>
-          <Route path="/auth" exact>
-            <Auth />
-          </Route>
-          <Redirect to="/" />
-        </Switch>
-      </Router>
-
-      <main></main>
+      <AuthContext.Provider
+        value={{
+          isLoggedIn: isLoggedIn,
+          // token: token,
+          login: login,
+          logout: logout,
+          userName,
+        }}
+      >
+        <Router>
+          <Navigation />
+          <main>{routes}</main>
+        </Router>
+      </AuthContext.Provider>
     </div>
   );
 }

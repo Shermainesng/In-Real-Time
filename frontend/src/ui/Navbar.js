@@ -1,32 +1,33 @@
-import { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import React, { useState, useContext } from 'react';
+import { Fragment } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import React, { useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { AuthContext } from '../shared/context/auth-context';
+import { AuthContext } from "../shared/context/auth-context";
 
 function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}    
+  return classes.filter(Boolean).join(" ");
+}
 
-const Navigation = props => {
-    const auth = useContext(AuthContext)
+const Navigation = (props) => {
+  //object that holds the latest auth object
+  //this component will re-render when the context we are listening to changes
+  const auth = useContext(AuthContext);
 
-    const [navigationItems, setNavigationItems] = useState([
-      { name: 'polls', href: '/polls', current: true, index:0 },
-      { name: 'about', href: '/about', current: false, index: 1},
-      { name: '+ new poll', href: '/polls/new', current: false, index:2 },
-    ]);
-  
-    const handleLinkClick = (index) => {
-      const updatedItems = navigationItems.map((item, i) =>
-        i === index ? { ...item, current: true } : { ...item, current: false }
-      );
-      console.log(index)
-  
-      setNavigationItems(updatedItems);
-    };
+  const [navigationItems, setNavigationItems] = useState([
+    { name: "polls", href: "/polls", current: true, index: 0 },
+    { name: "about", href: "/about", current: false, index: 1 },
+    { name: "+ new poll", href: "/polls/new", current: false, index: 2 },
+  ]);
 
+  const handleLinkClick = (index) => {
+    const updatedItems = navigationItems.map((item, i) =>
+      i === index ? { ...item, current: true } : { ...item, current: false }
+    );
+    console.log(index);
+
+    setNavigationItems(updatedItems);
+  };
 
   return (
     <Disclosure as="nav" className="bg-bright-yellow">
@@ -60,13 +61,12 @@ const Navigation = props => {
                       <div
                         key={item.name}
                         className={classNames(
-                            'rounded-md px-3 py-2 text-sm font-medium text-navy-blue',
-                            (
-                              item.current ? 
-                              'bg-pink-200': 'bg-pink-50 hover:bg-pink-200'
-                            ),
-                          )}
-                        aria-current={item.current ? 'page' : undefined}
+                          "rounded-md px-3 py-2 text-sm font-medium text-navy-blue",
+                          item.current
+                            ? "bg-pink-200"
+                            : "bg-pink-50 hover:bg-pink-200"
+                        )}
+                        aria-current={item.current ? "page" : undefined}
                         onClick={() => handleLinkClick(item.index)}
                       >
                         <NavLink to={item.href}>{item.name}</NavLink>
@@ -76,12 +76,14 @@ const Navigation = props => {
                 </div>
               </div>
 
-              {!auth.isLoggedIn && (
-                <div>
-                <NavLink to="/auth">LOGIN</NavLink>
-                </div>
-            )}
-            
+              <div>
+                {auth.isLoggedIn ? (
+                  <button onClick={auth.logout}>{auth.userName}, LOGOUT</button>
+                ) : (
+                  <NavLink to="/auth">LOGIN</NavLink>
+                )}
+              </div>
+
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {/* <div className="flex space-x-4">
                     <Link to="/polls/new">
@@ -116,7 +118,10 @@ const Navigation = props => {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(active ? 'bg-pink-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            className={classNames(
+                              active ? "bg-pink-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
                           >
                             Your Profile
                           </a>
@@ -126,7 +131,10 @@ const Navigation = props => {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
                           >
                             Settings
                           </a>
@@ -136,7 +144,10 @@ const Navigation = props => {
                         {({ active }) => (
                           <a
                             href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
                           >
                             Sign out
                           </a>
@@ -157,10 +168,12 @@ const Navigation = props => {
                   as="a"
                   href={item.href}
                   className={classNames(
-                    item.current ? 'bg-gray-900 text-navy-blue' : 'text-navy-blue hover:bg-gray-700 hover:text-navy-blue',
-                    'block rounded-md px-3 py-2 text-base font-medium'
+                    item.current
+                      ? "bg-gray-900 text-navy-blue"
+                      : "text-navy-blue hover:bg-gray-700 hover:text-navy-blue",
+                    "block rounded-md px-3 py-2 text-base font-medium"
                   )}
-                  aria-current={item.current ? 'page' : undefined}
+                  aria-current={item.current ? "page" : undefined}
                 >
                   {item.name}
                 </Disclosure.Button>
@@ -170,7 +183,7 @@ const Navigation = props => {
         </>
       )}
     </Disclosure>
-  )
-}
+  );
+};
 
 export default Navigation;

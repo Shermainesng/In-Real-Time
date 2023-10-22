@@ -1,7 +1,3 @@
-export default function Polls() {
-    return (
-        <div>
-            All polls 
-        </div>
-    )
+export default function Events() {
+  return <div>All polls</div>;
 }

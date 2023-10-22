@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-// import './Button.css';
+import "./Button.css";
 
 const Button = (props) => {
   if (props.href) {
@@ -24,12 +24,13 @@ const Button = (props) => {
         className={`button
         ${
           props.yellow &&
-          "w-2/3 border-2 border-navy-blue bg-bright-yellow text-navy-blue mt-4 py-2"
+          "w-2/3 border-2 border-navy-blue bg-bright-yellow text-navy-blue mt-4 py-2 no-underline"
         } 
         ${
           props.blue &&
           "bg-navy-blue hover:bg-pink text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        }`}
+        }
+       `}
       >
         {props.children}
       </Link>
@@ -40,7 +41,7 @@ const Button = (props) => {
       className={`button
       ${
         props.yellow &&
-        "w-2/3 border-2 border-navy-blue bg-bright-yellow text-navy-blue mt-4 py-2"
+        "w-2/3 border-2 border-navy-blue bg-bright-yellow text-navy-blue mt-4 py-2 no-underline"
       }
       ${
         props.blue &&

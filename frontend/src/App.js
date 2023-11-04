@@ -13,7 +13,11 @@ import Home from "./Home";
 import Events from "./events/pages/Events";
 import NewPoll from "./polls/pages/NewPoll";
 import Auth from "./user/pages/Auth";
+import Event from "./events/pages/Event";
 import { AuthContext } from "./shared/context/auth-context";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import NewEventForm from "./events/pages/NewEvent";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -41,8 +45,17 @@ function App() {
         <Route path="/" exact>
           <Home />
         </Route>
+        <Route path="/events/users/" exact>
+          <Events />
+        </Route>
         <Route path="/events" exact>
           <Events />
+        </Route>
+        <Route path="/events/new" exact>
+          <NewEventForm />
+        </Route>
+        <Route path="/events/:eventId/polls" exact>
+          <Event />
         </Route>
         <Route path="/polls/new" exact>
           <NewPoll />
@@ -66,20 +79,23 @@ function App() {
 
   return (
     <div className="App">
-      <AuthContext.Provider
-        value={{
-          isLoggedIn: isLoggedIn,
-          // token: token,
-          login: login,
-          logout: logout,
-          userName,
-        }}
-      >
-        <Router>
-          <Navigation />
-          <main>{routes}</main>
-        </Router>
-      </AuthContext.Provider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <AuthContext.Provider
+          value={{
+            isLoggedIn: isLoggedIn,
+            // token: token,
+            login: login,
+            logout: logout,
+            userName,
+            userId,
+          }}
+        >
+          <Router>
+            <Navigation />
+            <main>{routes}</main>
+          </Router>
+        </AuthContext.Provider>
+      </LocalizationProvider>
     </div>
   );
 }

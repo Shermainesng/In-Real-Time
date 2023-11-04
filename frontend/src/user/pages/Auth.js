@@ -16,7 +16,7 @@ import {
 import { useForm } from "../../../src/shared/hooks/form-hook";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { AuthContext } from "../../shared/context/auth-context";
-import useHttpClient from "../../shared/hooks/http-hook";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 
 const Auth = () => {
   const auth = useContext(AuthContext);
@@ -53,7 +53,6 @@ const Auth = () => {
           }
         );
         auth.login(responseData.userId, responseData.userName);
-        console.log("hi auth " + auth);
       } catch (err) {}
       //signup mode
     } else {

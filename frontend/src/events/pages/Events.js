@@ -1,37 +1,77 @@
-import React, { useState } from "react";
-
-import Event from "../components/Event";
+import React, { useState, useEffect } from "react";
+import { useContext } from "react";
+import DisplayEvent from "../components/DisplayEvent";
 import Button from "../../shared/components/FormElements/Button";
 import NewEventDate from "../components/NewEventDate";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import { AuthContext } from "../../shared/context/auth-context";
 
 export default function Events() {
   const [showNewEventPopup, setShowNewEventPopup] = useState(false);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [activeEvents, setActiveEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
+  const auth = useContext(AuthContext);
+  const userId = auth.userId;
+
+  //get request for all Events
+  useEffect(() => {
+    const getAllEvents = async () => {
+      try {
+        const responseData = await sendRequest(
+          `http://localhost:7005/api/events/${userId}`
+        );
+        console.log(responseData);
+        separateEventsByDate(responseData.events);
+      } catch (err) {}
+    };
+    getAllEvents();
+  }, [sendRequest, userId]);
+
+  const separateEventsByDate = (events) => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    for (let event of events) {
+      if (event.endDate >= currentDate) {
+        setActiveEvents((activeEvents) => [...activeEvents, event]);
+      } else {
+        setPastEvents((pastEvents) => [...pastEvents, event]);
+      }
+    }
+  };
+
+  console.log(activeEvents);
+  console.log(pastEvents);
 
   return (
     <div className="h-screen relative">
-      <div className="bg-purple absolute inset-0 items-center">
+      <div className="bg-purple px-40 absolute inset-0 items-center">
         {showNewEventPopup && (
           <NewEventDate setShowNewEventPopup={setShowNewEventPopup} />
         )}
         <div className="flex justify-between items-center justify-center">
           <div className="text-navy-blue text-3xl">active</div>
-          <Button
-            onClick={() => {
-              setShowNewEventPopup(true);
-            }}
-            className="px-4"
-            yellow
-          >
-            Create New Event
-          </Button>
+          <div className="w-2/3 sm:w-1/3 md:w-1/3 px-3 text-left">
+            <Button
+              onClick={() => {
+                setShowNewEventPopup(true);
+              }}
+              className="px-4"
+              yellow
+            >
+              Create New Event
+            </Button>
+          </div>
         </div>
         <div className="flex flex-col">
-          <div className="flex flex-col w-full sm:w-3/3 md:w-3/3 px-3">
-            <Event />
-          </div>
-          <div className="flex flex-col w-full sm:w-2/3 md:w-1/3">
-            <div className="text-navy-blue text-3xl">past</div>
-            <Event />
+          {activeEvents.length > 0 &&
+            activeEvents.map((event) => (
+              <div className="flex flex-col w-full sm:w-3/3 md:w-2/3 px-3">
+                <DisplayEvent event={event} />
+              </div>
+            ))}
+          <div className="text-navy-blue text-3xl text-left">past</div>
+          <div className="flex flex-col w-full sm:w-2/3 md:w-2/3 px-3">
+            {/* <DisplayEvent /> */}
           </div>
           <p>
             You have no events yet. Create a new event and start interacting

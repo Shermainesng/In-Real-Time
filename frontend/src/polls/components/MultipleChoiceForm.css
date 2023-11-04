@@ -1,0 +1,17 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(137, 135, 135, 0.8); /* Semi-transparent white background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* .card-body input {
+    background-color: white;
+    color: #071FFF;
+    width:80%
+  } */

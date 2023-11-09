@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Event from "../pages/Event";
 
 export default function DisplayEvent(props) {
   const { event } = props;
   console.log(event);
-  const eventPath = `/events/${event.id}/polls`;
+  const eventPath = `/events/${event.id}`;
   return (
     <div>
       <Link to={eventPath}>

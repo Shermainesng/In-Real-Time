@@ -70,9 +70,12 @@ export default function Events() {
               </div>
             ))}
           <div className="text-navy-blue text-3xl text-left">past</div>
-          <div className="flex flex-col w-full sm:w-2/3 md:w-2/3 px-3">
-            {/* <DisplayEvent /> */}
-          </div>
+          {pastEvents.length > 0 &&
+            pastEvents.map((event) => (
+              <div className="flex flex-col w-full sm:w-3/3 md:w-2/3 px-3">
+                <DisplayEvent event={event} />
+              </div>
+            ))}
           <p>
             You have no events yet. Create a new event and start interacting
             with your audience!

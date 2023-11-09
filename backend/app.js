@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 
 const usersRoutes = require("./routes/users-routes");
 const eventsRoutes = require("./routes/events-routes");
+const pollsRoutes = require("./routes/polls-routes");
 const HttpError = require("./models/http-error");
 
 const app = express();
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 
 app.use("/api/users", usersRoutes);
 app.use("/api/events", eventsRoutes);
+app.use("/api/polls", pollsRoutes);
 
 //error handling for undefined routes
 app.use((req, res, next) => {

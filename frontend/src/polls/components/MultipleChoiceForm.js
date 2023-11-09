@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import "./MultipleChoiceForm.css";
 import { BsXLg } from "react-icons/bs";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import { useParams } from "react-router-dom";
 
-export default function MultipleChoiceForm() {
+export default function MultipleChoiceForm({ setShowNewPoll }) {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([""]);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const eventId = useParams().eventId;
 
   const handleOptionInput = (index, e) => {
     const newOptions = [...options];
@@ -21,17 +25,37 @@ export default function MultipleChoiceForm() {
     setOptions([...options, ""]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    //save the poll to the db - send eventId, question and options array to db
-    //in that api, we save the poll to that event, and save the options to the poll
+    try {
+      const responseData = await sendRequest(
+        `http://localhost:7005/api/polls/${eventId}/new`,
+        "POST",
+        JSON.stringify({
+          question,
+          options,
+          type: "Multiple Choice",
+        }),
+        {
+          "Content-Type": "application/json",
+        }
+      );
+      console.log(responseData);
+    } catch (err) {
+      console.log(err);
+    }
+    setShowNewPoll(false);
   };
+
   return (
     <div className="overlay">
       <div className="w-2/3 sm:w-1/3 md:w-1/3 px-3 text-left">
         <div className="card bg-base-100 popup-container bg-white">
           <div className="card-body text-navy-blue">
             <form onSubmit={handleSubmit}>
+              <button type="button" onClick={() => setShowNewPoll(false)}>
+                <BsXLg />
+              </button>
               <div>
                 <label>Question:</label>
                 <input

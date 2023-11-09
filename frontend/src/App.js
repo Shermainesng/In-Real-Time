@@ -54,7 +54,7 @@ function App() {
         <Route path="/events/new" exact>
           <NewEventForm />
         </Route>
-        <Route path="/events/:eventId/polls" exact>
+        <Route path="/events/:eventId" exact>
           <Event />
         </Route>
         <Route path="/polls/new" exact>

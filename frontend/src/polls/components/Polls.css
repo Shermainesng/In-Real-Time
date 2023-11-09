@@ -11,4 +11,13 @@ ul {
   li.selected {
     background-color: #f0f0f0;
   }
-  
+
+  .custom-max-height-70 {
+    min-height: 40rem; 
+    max-height: 40rem;
+  }
+
+.poll-card:hover {
+  background-color: #D3FF56
+  ;
+}

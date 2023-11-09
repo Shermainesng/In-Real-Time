@@ -6,8 +6,8 @@ const User = require("../models/user");
 const { v4: uuidv4 } = require("uuid");
 
 const getEventById = async (req, res, next) => {
+  console.log("get Event by ID");
   const eventId = req.params.eventId;
-  console.log("meet here");
   let event;
   try {
     event = await Event.findById(eventId);

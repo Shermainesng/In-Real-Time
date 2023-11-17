@@ -24,7 +24,7 @@ const Button = (props) => {
         className={`button
         ${
           props.yellow &&
-          "w-2/3 border-2 border-navy-blue bg-bright-yellow text-navy-blue mt-4 py-2 no-underline"
+          "border-2 border-navy-blue bg-bright-yellow text-navy-blue mt-4 py-2 no-underline"
         } 
         ${
           props.blue &&

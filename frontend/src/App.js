@@ -18,6 +18,7 @@ import { AuthContext } from "./shared/context/auth-context";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import NewEventForm from "./events/pages/NewEvent";
+import Vote from "./polls/pages/Vote";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -57,6 +58,9 @@ function App() {
         <Route path="/events/:eventId" exact>
           <Event />
         </Route>
+        <Route path="/events/:pollId/vote" exact>
+          <Vote />
+        </Route>
         <Route path="/polls/new" exact>
           <NewPoll />
         </Route>
@@ -71,6 +75,9 @@ function App() {
         </Route>
         <Route path="/auth" exact>
           <Auth />
+        </Route>
+        <Route path="/events/:pollId/vote" exact>
+          <Vote />
         </Route>
         <Redirect to="/auth" />
       </Switch>

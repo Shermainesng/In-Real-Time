@@ -54,12 +54,6 @@ const getAllEventsByUserId = async (req, res, next) => {
 
 const createEvent = async (req, res, next) => {
   console.log(req.body);
-  //   const errors = validationResult(req);
-  //   if (!errors.isEmpty()) {
-  //     console.log(errors);
-  //     res.status(422);
-  //     throw new HttpError("Invalid inputs passed", 422);
-  //   }
 
   const { startDate, endDate, name, creator } = req.body;
   const createdEvent = new Event({

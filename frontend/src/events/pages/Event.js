@@ -6,10 +6,6 @@ import { AuthContext } from "../../shared/context/auth-context";
 import Button from "../../shared/components/FormElements/Button";
 import MultipleChoiceForm from "../../polls/components/MultipleChoiceForm";
 import "./Event.css";
-import PollList from "../../polls/components/PollList";
-import LiveView from "../../polls/components/LiveView";
-import { StateProvider } from "../../shared/context/StateContext";
-import reducer, { initialState } from "../../shared/reducers/poll-reducer";
 import EventPageContent from "../components/EventPageContent";
 
 export default function Event() {
@@ -52,7 +48,9 @@ export default function Event() {
       <div className="dropdown dropdown-hover">
         <div>
           <label tabIndex={0} className="btn m-1">
-            Hover
+            <button className="border-2 text-navy-blue border-navy-blue bg-bright-yellow px-4">
+              Add a poll
+            </button>
           </label>
         </div>
         <div>

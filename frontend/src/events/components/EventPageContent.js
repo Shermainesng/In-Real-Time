@@ -42,13 +42,11 @@ export default function EventPageContent({ eventId }) {
       }
     };
     fetchPolls();
-  }, [eventId, pollDispatch]);
+  }, [pollDispatch]);
 
   let retrievedPolls;
   if (pollState.polls && pollState.polls.events) {
     retrievedPolls = pollState.polls.events;
-    console.log("this is retrieved polls");
-    console.log(retrievedPolls);
   }
 
   return (

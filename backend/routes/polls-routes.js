@@ -9,5 +9,7 @@ console.log("reached polls routes");
 
 router.get("/:eventId", pollsController.getAllPollsByEventId);
 router.post("/:eventId/new", pollsController.createPoll);
+router.get("/:pollId/results", pollsController.getPollScores);
+router.post("/:pollId/results", pollsController.updatePollScores);
 
 module.exports = router;

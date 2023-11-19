@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FaWpforms } from "react-icons/fa";
 
 const Poll = ({ poll }) => {
-  console.log(poll);
   return (
     <React.Fragment>
       <div className="poll-card py-2">

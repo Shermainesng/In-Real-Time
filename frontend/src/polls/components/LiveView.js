@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useCustomContext } from "../../shared/context/CustomContext";
+import { Link } from "react-router-dom";
 
 export default function LiveView() {
   const { pollState, pollDispatch } = useCustomContext();
@@ -21,6 +22,18 @@ export default function LiveView() {
         </p>
         {selectedPoll && (
           <div className="selected-poll">
+            {/* <Link to={`/events/${selectedPoll.id}/vote`}>Vote here</Link> */}
+            <Link
+              to={{
+                pathname: `/events/${selectedPoll.id}/vote`,
+                state: {
+                  question: selectedPoll.question,
+                  options: selectedPoll.options,
+                },
+              }}
+            >
+              vote here
+            </Link>
             <h2>{selectedPoll.question}</h2>
           </div>
         )}

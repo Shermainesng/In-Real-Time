@@ -26,6 +26,9 @@ export default function PollList(props) {
               <Poll poll={poll} />
             </div>
           ))}
+        {pollState.polls && pollState.polls.events.length === 0 && (
+          <div>No polls. Add polls now</div>
+        )}
       </div>
     </div>
   );

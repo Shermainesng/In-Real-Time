@@ -36,8 +36,8 @@ mongoose.connection.once("open", () => {
 //   res.sendStatus(200);
 // });
 
-app.use("/api/users", usersRoutes);
 app.use("/api/events", eventsRoutes);
+app.use("/api/users", usersRoutes);
 app.use("/api/polls", pollsRoutes);
 
 //error handling for undefined routes

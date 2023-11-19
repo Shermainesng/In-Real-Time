@@ -3,28 +3,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-const usersRoutes = require("./routes/users-routes");
-const eventsRoutes = require("./routes/events-routes");
-const pollsRoutes = require("./routes/polls-routes");
+const usersRoutes = require("./api/users");
+const eventsRoutes = require("./api/events");
+const pollsRoutes = require("./api/polls");
 const HttpError = require("./models/http-error");
 const app = express();
 app.use(bodyParser.json());
-// app.use(cors());
-
-// handling CORS error - exchange of data between different servers prohibited by browser
-// app.use(cors(
-//   {
-//     origin: ["https://deploy-mern-"]
-//   }
-// ))
 // if (process.env.ENV === "dev") require("dotenv").config();
-require("dotenv").config();
-
-/* Display message in the console if the connection is successful. */
-mongoose.connection.once("open", () => {
-  console.log("connected!");
-});
-
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -34,6 +19,13 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
   next();
 });
+require("dotenv").config();
+
+/* Display message in the console if the connection is successful. */
+mongoose.connection.once("open", () => {
+  console.log("connected!");
+});
+
 // app.options("*", (req, res) => {
 //   res.setHeader("Access-Control-Allow-Origin", "*");
 //   res.setHeader(

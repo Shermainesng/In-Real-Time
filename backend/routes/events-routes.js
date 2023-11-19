@@ -9,6 +9,17 @@ const router = express.Router();
 
 console.log("reached events routes");
 
+router.get("/", async (req, res) => {
+  try {
+    res.json({
+      status: 200,
+      message: "get data has succesfully ok",
+    });
+  } catch (err) {
+    console.log(error);
+    return res.status(500).send("server error");
+  }
+});
 router.get("/:userId", eventsController.getAllEventsByUserId);
 
 router.get("/:eventId/polls", eventsController.getEventById);

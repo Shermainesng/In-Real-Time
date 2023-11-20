@@ -20,7 +20,8 @@ export default function Event() {
     const getEvent = async () => {
       try {
         const responseData = await sendRequest(
-          `http://localhost:7005/api/events/${eventId}/polls`
+          // `http://localhost:7005/api/events/${eventId}/polls`
+          process.env.REACT_APP_BACKEND_URL + `/${eventId}/polls`
         );
         const eventData = responseData.event;
         console.log("event.js" + eventData.name);

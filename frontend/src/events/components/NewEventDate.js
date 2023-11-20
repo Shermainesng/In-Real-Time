@@ -42,7 +42,8 @@ export default function NewEventDate(props) {
   const handleSubmit = async (values) => {
     try {
       const responseData = await sendRequest(
-        "http://localhost:7005/api/events/new",
+        // "http://localhost:7005/api/events/new",
+        process.env.REACT_APP_BACKEND_URL + "/events/new",
         "POST",
         JSON.stringify({
           startDate: values.startDate,

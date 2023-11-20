@@ -19,7 +19,8 @@ export default function Events() {
     const getAllEvents = async () => {
       try {
         const responseData = await sendRequest(
-          `http://localhost:7005/api/events/${userId}`
+          // `http://localhost:7005/api/events/${userId}`
+          process.env.REACT_APP_BACKEND_URL + `/events/${userId}`
         );
         console.log(responseData);
         separateEventsByDate(responseData.events);

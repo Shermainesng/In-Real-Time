@@ -61,7 +61,8 @@ const Auth = () => {
     } else {
       try {
         const responseData = await sendRequest(
-          "http://localhost:7005/api/users/signup",
+          // "http://localhost:7005/api/users/signup",
+          process.env.REACT_APP_BACKEND_URL + "/users/signup",
           "POST",
           JSON.stringify({
             name: formState.inputs.name.value,

@@ -33,7 +33,8 @@ export default function EventPageContent({ eventId }) {
     const fetchPolls = async () => {
       try {
         const response = await fetch(
-          `http://localhost:7005/api/polls/${eventId}`
+          // `http://localhost:7005/api/polls/${eventId}`
+          process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}`
         );
         const data = await response.json();
         pollDispatch({ type: "SET_POLLS", payload: data });

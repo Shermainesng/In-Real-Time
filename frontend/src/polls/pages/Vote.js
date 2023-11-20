@@ -5,6 +5,7 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 export default function Vote() {
   const location = useLocation();
   const { question, options } = location.state;
+  const [showResults, setShowResults] = useState(false);
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
   const [results, setResults] = useState([]);
   const [totalVote, setTotalVote] = useState(0);
@@ -21,7 +22,7 @@ export default function Vote() {
       try {
         const responseData = await sendRequest(
           //   `http://localhost:7005/api/polls/${pollId}/results`
-          process.env.REACT_APP_BACKEND_URL + `/${pollId}/results`
+          process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}/results`
         );
         console.log(responseData);
         optionResultsRef.current = responseData;
@@ -39,18 +40,21 @@ export default function Vote() {
   let resultsData;
   const handleSubmit = (e) => {
     e.preventDefault();
-    resultsData = optionResultsRef.current;
-    resultsData[selectedOptionIdx]++;
-    console.log(resultsData);
-    //post request to update scores
-    updateResults(resultsData);
+    if (!showResults) {
+      setShowResults(true);
+      resultsData = optionResultsRef.current;
+      resultsData[selectedOptionIdx]++;
+      console.log(resultsData);
+      //post request to update scores
+      updateResults(resultsData);
+    }
   };
 
   const updateResults = async (resultsData) => {
     try {
       const responseData = await sendRequest(
         // `http://localhost:7005/api/polls/${pollId}/results`,
-        process.env.REACT_APP_BACKEND_URL + `/${pollId}/results`,
+        process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}/results`,
         "POST",
         JSON.stringify({
           resultsData,
@@ -93,14 +97,16 @@ export default function Vote() {
                     name="option"
                     value={index}
                     onChange={handleChange}
+                    disabled={showResults}
                   />
                   {option}
-                  {results && results[index]}
-                  <progress
-                    className="progress w-56"
-                    value={results[index]}
-                    max={totalVote}
-                  ></progress>
+                  {showResults && results && (
+                    <progress
+                      className="progress w-56"
+                      value={results[index]}
+                      max={totalVote}
+                    ></progress>
+                  )}
                 </label>
               </div>
             ))}

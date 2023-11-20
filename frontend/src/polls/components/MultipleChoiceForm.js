@@ -3,8 +3,10 @@ import "./MultipleChoiceForm.css";
 import { BsXLg } from "react-icons/bs";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useParams } from "react-router-dom";
+import { useCustomContext } from "../../shared/context/CustomContext";
 
 export default function MultipleChoiceForm({ setShowNewPoll }) {
+  const { pollState, pollDispatch } = useCustomContext();
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([""]);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -41,7 +43,9 @@ export default function MultipleChoiceForm({ setShowNewPoll }) {
           "Content-Type": "application/json",
         }
       );
-      console.log(responseData);
+      console.log("before dispatch", pollState);
+      const newPoll = responseData.poll;
+      pollDispatch({ type: "ADD_POLL", payload: newPoll });
     } catch (err) {
       console.log(err);
     }

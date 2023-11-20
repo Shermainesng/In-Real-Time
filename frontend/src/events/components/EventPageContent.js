@@ -1,33 +1,10 @@
 import React, { useReducer, useEffect } from "react";
 import PollList from "../../polls/components/PollList";
 import LiveView from "../../polls/components/LiveView";
-// import { useStateValue } from "../../shared/context/StateContext";
-import CustomContext from "../../shared/context/CustomContext";
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "SET_POLLS":
-      return { ...state, polls: action.payload };
-    case "SELECT_POLL":
-      return {
-        ...state,
-        selectedPoll: action.payload,
-      };
-    default:
-      return state;
-  }
-}
+import { useCustomContext } from "../../shared/context/CustomContext";
 
 export default function EventPageContent({ eventId }) {
-  const [pollState, pollDispatch] = useReducer(reducer, {
-    polls: [],
-    selectedPoll: null,
-  });
-
-  const providerState = {
-    pollState,
-    pollDispatch,
-  };
+  const { pollState, pollDispatch } = useCustomContext();
 
   useEffect(() => {
     const fetchPolls = async () => {
@@ -37,25 +14,27 @@ export default function EventPageContent({ eventId }) {
           process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}`
         );
         const data = await response.json();
+        console.log("fetching polls is ran");
         pollDispatch({ type: "SET_POLLS", payload: data });
       } catch (error) {
         console.error("Error fetching polls:", error);
       }
     };
     fetchPolls();
-  }, [pollDispatch]);
+  }, [pollDispatch, eventId]);
 
   let retrievedPolls;
   if (pollState.polls && pollState.polls.events) {
+    console.log(pollState.polls.events);
     retrievedPolls = pollState.polls.events;
   }
 
   return (
-    <CustomContext.Provider value={providerState}>
-      <div className="flex flex-wrap justify-between items-end">
-        {retrievedPolls && <PollList />}
-        <LiveView />
-      </div>
-    </CustomContext.Provider>
+    // <CustomContext.Provider value={providerState}>
+    <div className="flex flex-wrap justify-between items-end">
+      {retrievedPolls && <PollList />}
+      <LiveView />
+    </div>
+    // </CustomContext.Provider>
   );
 }

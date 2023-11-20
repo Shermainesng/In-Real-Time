@@ -29,7 +29,8 @@ export default function MultipleChoiceForm({ setShowNewPoll }) {
     e.preventDefault();
     try {
       const responseData = await sendRequest(
-        `http://localhost:7005/api/polls/${eventId}/new`,
+        // `http://localhost:7005/api/polls/${eventId}/new`,
+        process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}/new`,
         "POST",
         JSON.stringify({
           question,

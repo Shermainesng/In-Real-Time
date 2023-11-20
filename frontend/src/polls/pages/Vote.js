@@ -20,7 +20,8 @@ export default function Vote() {
     const getResults = async () => {
       try {
         const responseData = await sendRequest(
-          `http://localhost:7005/api/polls/${pollId}/results`
+          //   `http://localhost:7005/api/polls/${pollId}/results`
+          process.env.REACT_APP_BACKEND_URL + `/${pollId}/results`
         );
         console.log(responseData);
         optionResultsRef.current = responseData;
@@ -48,7 +49,8 @@ export default function Vote() {
   const updateResults = async (resultsData) => {
     try {
       const responseData = await sendRequest(
-        `http://localhost:7005/api/polls/${pollId}/results`,
+        // `http://localhost:7005/api/polls/${pollId}/results`,
+        process.env.REACT_APP_BACKEND_URL + `/${pollId}/results`,
         "POST",
         JSON.stringify({
           resultsData,

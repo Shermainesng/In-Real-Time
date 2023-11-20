@@ -40,6 +40,7 @@ const Auth = () => {
   );
 
   const authSubmitHandler = async (event) => {
+    console.log(formState);
     event.preventDefault();
     if (isLoginMode) {
       try {
@@ -107,11 +108,6 @@ const Auth = () => {
     setIsLoginMode((prevMode) => !prevMode);
   };
 
-  // const handleCloseAlert = () => {
-  //   //clear error when we click away
-  //   // setShowAlert(false);
-  //   setError(undefined);
-  // };
   return (
     <React.Fragment>
       {error !== undefined && <ErrorAlert error={error} onClose={clearError} />}
@@ -174,7 +170,12 @@ const Auth = () => {
               />
             </div>
             <div class="flex flex-col items-center justify-between">
-              <Button blue type="submit" disabled={!formState.isValid}>
+              <Button
+                blue
+                type="submit"
+                disabled={!formState.isValid}
+                onClick={authSubmitHandler}
+              >
                 {isLoginMode ? "Login" : "Signup"}
               </Button>
               <Link
@@ -186,11 +187,6 @@ const Auth = () => {
                   ? "No account yet? Create an account"
                   : "Have an account? Log in instead"}
               </Link>
-              {/* <Button blue onClick={switchModeHandler}>
-                {isLoginMode
-                  ? "No account yet? Create an account"
-                  : "Have an account? Log in instead"}
-              </Button> */}
             </div>
           </form>
           <p class="text-center text-gray-500 text-xs">

@@ -18,6 +18,7 @@ const getUsers = async (req, res, next) => {
 };
 
 const signup = async (req, res, next) => {
+  console.log("reached backend signup");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(new HttpError("Invalid inputs, check data", 422));
@@ -57,10 +58,12 @@ const signup = async (req, res, next) => {
     password: hashedPassword,
   });
 
+  console.log("reached createdUser");
   try {
     await createdUser.save();
   } catch (err) {
     const error = new HttpError("signing up failed, try again", 500);
+    console.log(err);
     return next(error);
   }
 

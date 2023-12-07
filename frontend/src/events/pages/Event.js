@@ -71,9 +71,6 @@ export default function Event() {
   return (
     <CustomContext.Provider value={providerState}>
       <div className="fixed top-0 left-0 h-screen w-full bg-purple px-10 sm:px-20 md:px-30 relative items-center">
-        {selectedPollType === "Multiple Choice" && showNewPoll && (
-          <MultipleChoiceForm setShowNewPoll={setShowNewPoll} />
-        )}
         <div>{event.name}</div>
         <div className="dropdown dropdown-hover">
           <div>
@@ -98,7 +95,10 @@ export default function Event() {
           </div>
         </div>
         {/* to render EventPageContent when polls updated */}
-        {!showNewPoll && <EventPageContent eventId={eventId} />}
+        {<EventPageContent eventId={eventId} />}
+        {selectedPollType === "Multiple Choice" && showNewPoll && (
+          <MultipleChoiceForm setShowNewPoll={setShowNewPoll} />
+        )}
       </div>
     </CustomContext.Provider>
   );

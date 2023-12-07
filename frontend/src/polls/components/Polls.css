@@ -21,3 +21,11 @@ ul {
   background-color: #D3FF56
   ;
 }
+
+.icon-edit:hover{
+  color: pink
+}
+
+.button-custom p:hover {
+  color: pink;
+}

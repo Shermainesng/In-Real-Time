@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -20,27 +20,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import NewEventForm from "./events/pages/NewEvent";
 import Vote from "./polls/pages/Vote";
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [token, setToken] = useState(null);
-  const [userId, setUserId] = useState(false);
-  const [userName, setUserName] = useState(null);
+import { useAuth } from "../src/shared/hooks/auth-hook";
 
-  const login = useCallback((userId, userName) => {
-    // setToken(token);
-    setIsLoggedIn(true);
-    setUserId(userId);
-    setUserName(userName);
-  }, []);
-  const logout = useCallback(() => {
-    // setToken(null);
-    setIsLoggedIn(false);
-    setUserId(null);
-  }, []);
+function App() {
+  const { token, login, logout, userId, userName } = useAuth();
 
   let routes;
-
-  if (isLoggedIn) {
+  if (token) {
     routes = (
       <Switch>
         <Route path="/" exact>
@@ -89,8 +75,8 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <AuthContext.Provider
           value={{
-            isLoggedIn: isLoggedIn,
-            // token: token,
+            isLoggedIn: !!token,
+            token: token,
             login: login,
             logout: logout,
             userName,

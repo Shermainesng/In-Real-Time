@@ -42,22 +42,21 @@ export default function NewEventDate(props) {
   const handleSubmit = async (values) => {
     try {
       const responseData = await sendRequest(
-        // "http://localhost:7005/api/events/new",
         process.env.REACT_APP_BACKEND_URL + "/events/new",
         "POST",
         JSON.stringify({
           startDate: values.startDate,
           endDate: values.endDate,
           name: values.eventName,
-          creator: values.userId,
         }),
         {
+          Authorization: "Bearer " + auth.token,
           "Content-Type": "application/json",
         }
       );
-      console.log(responseData);
-      const eventId = responseData.event._id;
-      history.push(`/events/${eventId}/polls`);
+      console.log("newly created event ", responseData);
+      const eventId = responseData.event._id; //6568ae6ba30061ebbb10ea7d
+      history.push(`/events/${eventId}`);
     } catch (err) {
       console.log(err);
     }

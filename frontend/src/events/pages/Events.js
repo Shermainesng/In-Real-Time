@@ -43,8 +43,17 @@ export default function Events() {
     }
   };
 
-  console.log(activeEvents);
-  console.log(pastEvents);
+  const updateEventsAfterDelete = (deletedEventId, isActive) => {
+    if (isActive) {
+      setActiveEvents((activeEvents) =>
+        activeEvents.filter((event) => event.id !== deletedEventId)
+      );
+    } else {
+      setPastEvents((pastEvents) =>
+        pastEvents.filter((event) => event.id !== deletedEventId)
+      );
+    }
+  };
 
   return (
     <div className="h-screen relative">
@@ -70,14 +79,22 @@ export default function Events() {
           {activeEvents.length > 0 &&
             activeEvents.map((event) => (
               <div className="flex flex-col w-full sm:w-3/3 md:w-2/3 px-3">
-                <DisplayEvent event={event} />
+                <DisplayEvent
+                  event={event}
+                  onDelete={updateEventsAfterDelete}
+                  isActive={true}
+                />
               </div>
             ))}
           <div className="text-navy-blue text-3xl text-left">past</div>
           {pastEvents.length > 0 &&
             pastEvents.map((event) => (
               <div className="flex flex-col w-full sm:w-3/3 md:w-2/3 px-3">
-                <DisplayEvent event={event} />
+                <DisplayEvent
+                  event={event}
+                  onDelete={updateEventsAfterDelete}
+                  isActive={false}
+                />
               </div>
             ))}
           <p>

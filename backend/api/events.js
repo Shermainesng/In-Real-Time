@@ -25,7 +25,6 @@ router.get("/", async (req, res) => {
 router.use(checkAuth);
 
 router.get("/:userId", eventsController.getAllEventsByUserId);
-
 router.get("/:eventId/polls", eventsController.getEventById);
 
 router.post(
@@ -38,6 +37,6 @@ router.post(
   eventsController.createEvent
 );
 
-
+router.delete("/:eventId", eventsController.deleteEvent);
 
 module.exports = router;

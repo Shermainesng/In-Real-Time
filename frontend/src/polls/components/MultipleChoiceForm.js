@@ -31,7 +31,6 @@ export default function MultipleChoiceForm({ setShowNewPoll }) {
     e.preventDefault();
     try {
       const responseData = await sendRequest(
-        // `http://localhost:7005/api/polls/${eventId}/new`,
         process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}/new`,
         "POST",
         JSON.stringify({
@@ -43,8 +42,8 @@ export default function MultipleChoiceForm({ setShowNewPoll }) {
           "Content-Type": "application/json",
         }
       );
-      console.log("before dispatch", pollState);
       const newPoll = responseData.poll;
+      console.log(newPoll);
       pollDispatch({ type: "ADD_POLL", payload: newPoll });
     } catch (err) {
       console.log(err);

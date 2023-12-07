@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-// import { useLocation } from "react-router-dom";
 import { useFormik, Field } from "formik";
 import * as Yup from "yup";
 
@@ -38,6 +37,15 @@ export default function NewEventDate(props) {
       handleSubmit(combinedData);
     },
   });
+
+  const handleDateChange = (fieldName, date) => {
+    formik.handleChange({
+      target: {
+        name: fieldName,
+        value: date.toISOString().slice(0, 10),
+      },
+    });
+  };
 
   const handleSubmit = async (values) => {
     try {
@@ -99,14 +107,14 @@ export default function NewEventDate(props) {
               id="startDate"
               label="Start date"
               value={dayjs(formik.values.startDate)}
-              onChange={formik.handleChange}
+              onChange={(date) => handleDateChange("startDate", date)}
             />
 
             <DatePicker
               id="endDate"
               label="End date"
               value={dayjs(formik.values.endDate)}
-              onChange={formik.handleChange}
+              onChange={(date) => handleDateChange("endDate", date)}
             />
 
             <h2 className="card-title">Give your event a name:</h2>

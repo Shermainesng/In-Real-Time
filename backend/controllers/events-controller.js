@@ -92,6 +92,36 @@ const createEvent = async (req, res, next) => {
   res.status(201).json({ event: createdEvent });
 };
 
+const deleteEvent = async (req, res, next) => {
+  const eventId = req.params.eventId;
+
+  let event;
+  try {
+    event = await Event.findById(eventId).populate("creator");
+    console.log("found event obj", event);
+  } catch (err) {
+    const error = new HttpError("sth went wrong, cannot find event", 500);
+    return next(error);
+  }
+
+  if (!event) {
+    const error = new HttpError("could not find event for this id", 404);
+    return next(error);
+  }
+
+  try {
+    await event.deleteOne();
+    await event.creator.events.pull(event);
+    await event.creator.save();
+  } catch (err) {
+    const error = new HttpError("Sth went wrong, could not delete event", 500);
+    console.log(err);
+    return next(error);
+  }
+  res.status(200).json({ message: "Deleted event" });
+};
+
 exports.getEventById = getEventById;
 exports.getAllEventsByUserId = getAllEventsByUserId;
 exports.createEvent = createEvent;
+exports.deleteEvent = deleteEvent;

@@ -6,34 +6,37 @@ import { useCustomContext } from "../../shared/context/CustomContext";
 export default function EventPageContent({ eventId }) {
   const { pollState, pollDispatch } = useCustomContext();
 
-  useEffect(() => {
-    const fetchPolls = async () => {
-      try {
-        const response = await fetch(
-          // `http://localhost:7005/api/polls/${eventId}`
-          process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}`
-        );
-        const data = await response.json();
-        console.log("fetching polls is ran");
-        pollDispatch({ type: "SET_POLLS", payload: data });
-      } catch (error) {
-        console.error("Error fetching polls:", error);
-      }
-    };
-    fetchPolls();
-  }, [pollDispatch, eventId]);
+  // console.log("eventpagecontent", pollState);
 
-  let retrievedPolls;
-  if (pollState.polls && pollState.polls.events) {
-    console.log(pollState.polls.events);
-    retrievedPolls = pollState.polls.events;
-  }
+  // useEffect(() => {
+  //   const fetchPolls = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}`
+  //       );
+  //       const data = await response.json();
+  //       console.log("fetching polls is ran in EventpageContent.js");
+  //       pollDispatch({ type: "SET_POLLS", payload: data });
+  //     } catch (error) {
+  //       console.error("Error fetching polls:", error);
+  //     }
+  //   };
+  //   if (pollState) {
+  //     fetchPolls();
+  //   }
+  // }, [eventId, pollDispatch]);
+
+  // let retrievedPolls;
+  // if (pollState && pollState.polls && pollState.polls.events) {
+  //   console.log(pollState.polls.events);
+  //   retrievedPolls = pollState.polls.events;
+  // }
 
   return (
     // <CustomContext.Provider value={providerState}>
     <div className="flex flex-wrap justify-between items-end mb-3">
+      {<PollList />}
       <LiveView />
-      {retrievedPolls && <PollList />}
     </div>
     // </CustomContext.Provider>
   );

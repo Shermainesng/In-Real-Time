@@ -55,19 +55,19 @@ const getAllEventsByUserId = async (req, res, next) => {
 const createEvent = async (req, res, next) => {
   console.log(req.body);
 
-  const { startDate, endDate, name, creator } = req.body;
+  const { startDate, endDate, name } = req.body;
   const createdEvent = new Event({
     // id: uuidv4(),
     startDate,
     endDate,
     name,
-    creator,
+    creator: req.userData.userId,
   });
 
   //relational: Event -> User
   let user;
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (err) {
     const error = new HttpError("Creating event failed, please try again", 500);
     return next(error);

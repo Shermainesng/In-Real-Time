@@ -12,6 +12,7 @@ export default function LiveView() {
   }
 
   return (
+    // <div className="relative">
     <div className="z-0 relative card flex-1 card bg-base-100 shadow-xl custom-max-height-70">
       <div className="card-body">
         <h1>Launch your poll to gather responses</h1>
@@ -39,5 +40,6 @@ export default function LiveView() {
         )}
       </div>
     </div>
+    // </div>
   );
 }

@@ -31,9 +31,9 @@ export default function EventPageContent({ eventId }) {
 
   return (
     // <CustomContext.Provider value={providerState}>
-    <div className="flex flex-wrap justify-between items-end">
-      {retrievedPolls && <PollList />}
+    <div className="flex flex-wrap justify-between items-end mb-3">
       <LiveView />
+      {retrievedPolls && <PollList />}
     </div>
     // </CustomContext.Provider>
   );

@@ -45,7 +45,6 @@ const Auth = () => {
     if (isLoginMode) {
       try {
         const responseData = await sendRequest(
-          // "http://localhost:7005/api/users/login",
           process.env.REACT_APP_BACKEND_URL + "/users/login",
           "POST",
           JSON.stringify({
@@ -56,13 +55,16 @@ const Auth = () => {
             "Content-Type": "application/json",
           }
         );
-        auth.login(responseData.userId, responseData.userName);
+        auth.login(
+          responseData.userId,
+          responseData.userName,
+          responseData.token
+        );
       } catch (err) {}
       //signup mode
     } else {
       try {
         const responseData = await sendRequest(
-          // "http://localhost:7005/api/users/signup",
           process.env.REACT_APP_BACKEND_URL + "/users/signup",
           "POST",
           JSON.stringify({
@@ -75,7 +77,7 @@ const Auth = () => {
           }
         );
         console.log(responseData);
-        auth.login(responseData.userId);
+        auth.login(responseData.userId, responseData.token);
         auth.setUserName(responseData.user.name);
       } catch (err) {}
     }

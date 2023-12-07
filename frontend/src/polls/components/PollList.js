@@ -3,6 +3,7 @@ import Poll from "./Poll";
 import "./Polls.css";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useCustomContext } from "../../shared/context/CustomContext";
+import LiveView from "./LiveView";
 
 export default function PollList(props) {
   const { pollState, pollDispatch } = useCustomContext();

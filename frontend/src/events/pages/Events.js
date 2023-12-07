@@ -13,14 +13,17 @@ export default function Events() {
   const [pastEvents, setPastEvents] = useState([]);
   const auth = useContext(AuthContext);
   const userId = auth.userId;
-
   //get request for all Events
   useEffect(() => {
     const getAllEvents = async () => {
       try {
         const responseData = await sendRequest(
-          // `http://localhost:7005/api/events/${userId}`
-          process.env.REACT_APP_BACKEND_URL + `/events/${userId}`
+          process.env.REACT_APP_BACKEND_URL + `/events/${userId}`,
+          "GET",
+          null,
+          {
+            Authorization: "Bearer " + auth.token,
+          }
         );
         console.log(responseData);
         separateEventsByDate(responseData.events);

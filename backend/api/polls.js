@@ -5,10 +5,10 @@ const HttpError = require("../models/http-error");
 const pollsController = require("../controllers/polls-controller");
 const router = express.Router();
 
-console.log("reached polls routes");
-
 router.get("/:eventId", pollsController.getAllPollsByEventId);
 router.post("/:eventId/new", pollsController.createPoll);
+router.patch("/:pollId", pollsController.updatePoll);
+router.delete("/:pollId", pollsController.deletePoll);
 router.get("/:pollId/results", pollsController.getPollScores);
 router.post("/:pollId/results", pollsController.updatePollScores);
 

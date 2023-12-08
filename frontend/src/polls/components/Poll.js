@@ -2,25 +2,50 @@ import React, { useState } from "react";
 import { FaWpforms } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import MultipleChoiceForm from "./MultipleChoiceForm";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import { useCustomContext } from "../../shared/context/CustomContext";
 
 const Poll = ({ poll }) => {
+  const { pollState, pollDispatch } = useCustomContext();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [editMode, setEditMode] = useState(false);
+  const [showNewPoll, setShowNewPoll] = useState(false);
+  const { sendRequest } = useHttpClient();
+  const pollId = poll.id;
 
   const toggleDropdown = () => {
     console.log(showDropdown);
     setShowDropdown(!showDropdown);
   };
   const handleEdit = () => {
-    setEditMode(!editMode);
+    setShowNewPoll(!showNewPoll);
   };
 
-  const handleDelete = () => {};
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    try {
+      const responseData = await sendRequest(
+        process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}`,
+        "DELETE"
+      );
+      console.log(responseData.pollId);
+      pollDispatch({ type: "DELETE_POLL", payload: responseData.pollId });
+    } catch (e) {
+      console.log(e);
+    }
+    toggleDropdown();
+  };
+
   return (
     <React.Fragment>
-      {editMode && (
-        <div>
-          <MultipleChoiceForm />
+      {showNewPoll && (
+        <div className="overlay">
+          <div className="w-full md:w-2/3 px-3 text-left">
+            <MultipleChoiceForm
+              setShowNewPoll={setShowNewPoll}
+              editMode={true}
+              poll={poll}
+            />
+          </div>
         </div>
       )}
       <div className="poll-card py-2">

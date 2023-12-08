@@ -16,6 +16,22 @@ function reducer(state, action) {
       };
     case "ADD_POLL":
       return { ...state, polls: [...state.polls, action.payload] };
+    case "UPDATE_POLL":
+      const updatedPollIndex = state.polls.findIndex(
+        (poll) => poll.id === action.payload._id
+      );
+      if (updatedPollIndex !== -1) {
+        const updatedPolls = [...state.polls];
+        updatedPolls[updatedPollIndex] = action.payload;
+        return { ...state, polls: updatedPolls };
+      } else {
+        return { ...state, polls: [...state.polls, action.payload] };
+      }
+    case "DELETE_POLL":
+      const filteredPolls = state.polls.filter(
+        (poll) => poll.id !== action.payload
+      );
+      return { ...state, polls: filteredPolls };
     case "SELECT_POLL":
       return {
         ...state,
@@ -51,7 +67,7 @@ export default function Event() {
           process.env.REACT_APP_BACKEND_URL + `/${eventId}/polls`
         );
         const eventData = responseData.event;
-        console.log("event.js" + eventData.name);
+        // console.log("event.js" + eventData.name);
         setEvent(eventData);
       } catch (err) {}
     };
@@ -66,8 +82,6 @@ export default function Event() {
           process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}`
         );
         const data = await response.json();
-        console.log("fetching polls in EVENT.JS");
-        console.log(data);
         pollDispatch({
           type: "SET_POLLS",
           payload: {
@@ -121,7 +135,11 @@ export default function Event() {
         {/* to render EventPageContent when polls updated */}
         {<EventPageContent eventId={eventId} />}
         {selectedPollType === "Multiple Choice" && showNewPoll && (
-          <MultipleChoiceForm setShowNewPoll={setShowNewPoll} />
+          <div className="overlay">
+            <div className="w-2/3 sm:w-1/3 md:w-1/3 px-3 text-left">
+              <MultipleChoiceForm setShowNewPoll={setShowNewPoll} />
+            </div>
+          </div>
         )}
       </div>
     </CustomContext.Provider>

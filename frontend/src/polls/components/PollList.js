@@ -10,11 +10,8 @@ export default function PollList(props) {
   const [localPolls, setLocalPolls] = useState([]);
 
   useEffect(() => {
-    console.log("polllist pollstate", pollState);
     setLocalPolls(pollState.polls || []);
   }, [pollState]);
-
-  console.log("LOCAL polls in POLLLIST.JS", localPolls);
 
   const handleSelectPoll = (selectedPoll) => {
     console.log(selectedPoll);

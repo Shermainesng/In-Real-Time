@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { useHttpClient } from "../../shared/hooks/http-hook";
+import { AuthContext } from "../../shared/context/auth-context";
 
 export default function DisplayEvent(props) {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
-  const { event } = props;
+  const { event, onDelete, isActive } = props;
   const eventPath = `/events/${event.id}`;
   const [toggleDropdown, setToggleDropdown] = useState(false);
+  const auth = useContext(AuthContext);
 
   const handleClickOutside = (e) => {
     if (toggleDropdown && !e.target.closest(".dropdown-icon")) {
@@ -25,10 +27,15 @@ export default function DisplayEvent(props) {
   const handleDeleteEvent = async (e) => {
     e.preventDefault();
     try {
-      await sendRequest(
+      const responseData = await sendRequest(
         process.env.REACT_APP_BACKEND_URL + `/events/${event.id}`,
-        "DELETE"
+        "DELETE",
+        null,
+        {
+          Authorization: "Bearer " + auth.token,
+        }
       );
+      onDelete(event.id, isActive);
     } catch (e) {}
   };
 

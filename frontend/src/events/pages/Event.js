@@ -2,8 +2,6 @@ import React, { useReducer, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import { AuthContext } from "../../shared/context/auth-context";
-import Button from "../../shared/components/FormElements/Button";
 import MultipleChoiceForm from "../../polls/components/MultipleChoiceForm";
 import "./Event.css";
 import EventPageContent from "../components/EventPageContent";
@@ -12,10 +10,12 @@ import CustomContext from "../../shared/context/CustomContext";
 function reducer(state, action) {
   switch (action.type) {
     case "SET_POLLS":
-      return { ...state, polls: action.payload };
+      return {
+        ...state,
+        polls: action.payload.polls, // Update the polls property
+      };
     case "ADD_POLL":
-      console.log("in add poll", state.polls.events);
-      return { ...state, polls: [...state.polls.events, action.payload] };
+      return { ...state, polls: [...state.polls, action.payload] };
     case "SELECT_POLL":
       return {
         ...state,
@@ -43,12 +43,11 @@ export default function Event() {
   const [selectedPollType, setSelectedPollType] = useState("");
   const eventId = useParams().eventId;
 
+  //getting event object
   useEffect(() => {
-    console.log("getting Event info now");
     const getEvent = async () => {
       try {
         const responseData = await sendRequest(
-          // `http://localhost:7005/api/events/${eventId}/polls`
           process.env.REACT_APP_BACKEND_URL + `/${eventId}/polls`
         );
         const eventData = responseData.event;
@@ -59,9 +58,34 @@ export default function Event() {
     getEvent();
   }, []);
 
+  //set initial state of polls
   useEffect(() => {
-    console.log("Polls have been updated:", pollState.polls);
-  }, [pollState.polls]);
+    const fetchPolls = async () => {
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}`
+        );
+        const data = await response.json();
+        console.log("fetching polls in EVENT.JS");
+        console.log(data);
+        pollDispatch({
+          type: "SET_POLLS",
+          payload: {
+            ...pollState,
+            polls: data.events,
+          },
+        });
+      } catch (error) {
+        console.error("Error fetching polls:", error);
+      }
+    };
+    fetchPolls();
+  }, []);
+
+  //will run when pollState changes
+  useEffect(() => {
+    console.log("Pollstate in Event.js", pollState.polls);
+  }, [pollState]);
 
   const handleSelection = (selected) => {
     setSelectedPollType(selected);

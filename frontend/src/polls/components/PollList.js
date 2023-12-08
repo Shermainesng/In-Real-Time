@@ -7,9 +7,14 @@ import LiveView from "./LiveView";
 
 export default function PollList(props) {
   const { pollState, pollDispatch } = useCustomContext();
+  const [localPolls, setLocalPolls] = useState([]);
 
-  console.log("polllist.js state");
-  console.log(pollState.polls);
+  useEffect(() => {
+    console.log("polllist pollstate", pollState);
+    setLocalPolls(pollState.polls || []);
+  }, [pollState]);
+
+  console.log("LOCAL polls in POLLLIST.JS", localPolls);
 
   const handleSelectPoll = (selectedPoll) => {
     console.log(selectedPoll);
@@ -21,15 +26,12 @@ export default function PollList(props) {
   return (
     <div className="z-0 relative card flex-1 card bg-base-100 shadow-xl custom-max-height-70 overflow-y-auto">
       <div className="card-body">
-        {pollState.polls &&
-          pollState.polls.events.map((poll) => (
+        {localPolls.length > 0 &&
+          localPolls.map((poll) => (
             <div onClick={() => handleSelectPoll(poll)} key={poll.id}>
               <Poll poll={poll} />
             </div>
           ))}
-        {pollState.polls && pollState.polls.events.length === 0 && (
-          <div>No polls. Add polls now</div>
-        )}
       </div>
     </div>
   );

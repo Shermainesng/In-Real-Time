@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import QRCode from "react-qr-code";
 import { useCustomContext } from "../../shared/context/CustomContext";
 import { Link } from "react-router-dom";
 
 export default function LiveView() {
   const { pollState, pollDispatch } = useCustomContext();
-  console.log(pollState.selectedPoll);
 
   let selectedPoll;
   if (pollState.selectedPoll !== null) {
     selectedPoll = pollState.selectedPoll;
+    // urlPath = `/events/${selectedPoll.id}/vote`;
   }
 
   return (
@@ -21,9 +23,10 @@ export default function LiveView() {
           Once you launch the poll, your participants can now vote with the link
           below
         </p>
+        {/* <QRCode value="hey" /> */}
         {selectedPoll && (
           <div className="selected-poll">
-            {/* <Link to={`/events/${selectedPoll.id}/vote`}>Vote here</Link> */}
+            <h2>{selectedPoll.question}</h2>
             <Link
               to={{
                 pathname: `/events/${selectedPoll.id}/vote`,
@@ -33,9 +36,11 @@ export default function LiveView() {
                 },
               }}
             >
-              vote here
+              <div className="flex flex-col items-center justify-center">
+                <QRCode value={`/events/${selectedPoll.id}/vote`} />
+                If the QR code doesn't work, use this link to vote:
+              </div>
             </Link>
-            <h2>{selectedPoll.question}</h2>
           </div>
         )}
       </div>

@@ -29,7 +29,6 @@ const getAllPollsByEventId = async (req, res, next) => {
 const createPoll = async (req, res, next) => {
   const { question, options, type } = req.body;
   const event = req.params.eventId;
-  console.log(type + "look here");
   const createdPoll = new Poll({
     // id: uuidv4(),
     event,
@@ -62,8 +61,56 @@ const createPoll = async (req, res, next) => {
     const error = new HttpError("can't save poll, try again", 500);
     return next(error);
   }
-
   res.status(201).json({ poll: createdPoll });
+};
+
+const updatePoll = async (req, res, next) => {
+  const pollId = req.params.pollId;
+  const { question, options, results } = req.body;
+
+  let updatedPoll;
+  try {
+    updatedPoll = await Poll.findByIdAndUpdate(
+      pollId,
+      { $set: { question, options, results } },
+      { new: true, runValidators: true }
+    );
+    if (!updatedPoll) {
+      const error = new HttpError("Poll not found.", 404);
+      return next(error);
+    }
+    res.status(200).json({ poll: updatedPoll.toObject({ getters: true }) });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find a poll.",
+      500
+    );
+    return next(error);
+  }
+};
+
+const deletePoll = async (req, res, next) => {
+  console.log("reached deletePoll");
+  const pollId = req.params.pollId;
+
+  let deletedPoll;
+  try {
+    deletedPoll = await Poll.deleteOne({ _id: pollId });
+    console.log(deletedPoll);
+    if (deletedPoll.deletedCount > 0) {
+      res
+        .status(200)
+        .json({ pollId: pollId, message: "Poll deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Poll not found or not deleted" });
+    }
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find a poll.",
+      500
+    );
+    return next(error);
+  }
 };
 
 const getPollScores = async (req, res, next) => {
@@ -117,6 +164,8 @@ const updatePollScores = async (req, res, next) => {
 };
 
 exports.createPoll = createPoll;
+exports.updatePoll = updatePoll;
+exports.deletePoll = deletePoll;
 exports.getAllPollsByEventId = getAllPollsByEventId;
 exports.getPollScores = getPollScores;
 exports.updatePollScores = updatePollScores;

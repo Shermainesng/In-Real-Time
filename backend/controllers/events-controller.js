@@ -53,8 +53,6 @@ const getAllEventsByUserId = async (req, res, next) => {
 };
 
 const createEvent = async (req, res, next) => {
-  console.log(req.body);
-
   const { startDate, endDate, name } = req.body;
   const createdEvent = new Event({
     // id: uuidv4(),
@@ -92,6 +90,31 @@ const createEvent = async (req, res, next) => {
   res.status(201).json({ event: createdEvent });
 };
 
+const updateEvent = async (req, res, next) => {
+  const eventId = req.params.eventId;
+  const { startDate, endDate, name } = req.body;
+
+  let updatedEvent;
+  try {
+    updatedEvent = await Event.findByIdAndUpdate(
+      eventId,
+      { $set: { startDate, endDate, name } },
+      { new: true, runValidators: true }
+    );
+    if (!updatedEvent) {
+      const error = new HttpError("Event not found.", 404);
+      return next(error);
+    }
+    res.status(200).json({ event: updatedEvent.toObject({ getters: true }) });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find a poll.",
+      500
+    );
+    return next(error);
+  }
+};
+
 const deleteEvent = async (req, res, next) => {
   const eventId = req.params.eventId;
 
@@ -124,4 +147,5 @@ const deleteEvent = async (req, res, next) => {
 exports.getEventById = getEventById;
 exports.getAllEventsByUserId = getAllEventsByUserId;
 exports.createEvent = createEvent;
+exports.updateEvent = updateEvent;
 exports.deleteEvent = deleteEvent;

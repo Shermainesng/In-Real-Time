@@ -10,8 +10,13 @@ export default function LiveView() {
   let selectedPoll;
   if (pollState.selectedPoll !== null) {
     selectedPoll = pollState.selectedPoll;
-    // urlPath = `/events/${selectedPoll.id}/vote`;
+    // console.log("selected poll in LiveView", selectedPoll);
   }
+
+  //auto update of poll when it is edited but LiveView is not re-rendered
+  // useEffect(() => {
+  //   console.log("hello", pollState.selectedPoll);
+  // }, [pollState]);
 
   return (
     // <div className="relative">
@@ -23,16 +28,16 @@ export default function LiveView() {
           Once you launch the poll, your participants can now vote with the link
           below
         </p>
-        {/* <QRCode value="hey" /> */}
         {selectedPoll && (
           <div className="selected-poll">
             <h2>{selectedPoll.question}</h2>
             <Link
               to={{
-                pathname: `/events/${selectedPoll.id}/vote`,
+                pathname: `/events/${selectedPoll._id}/vote`,
                 state: {
                   question: selectedPoll.question,
-                  options: selectedPoll.options,
+                  options: selectedPoll.options ? selectedPoll.options : null,
+                  type: selectedPoll.type,
                 },
               }}
             >

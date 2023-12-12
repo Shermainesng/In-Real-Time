@@ -3,10 +3,12 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
+import NewEventDate from "./NewEventDate";
 
 export default function DisplayEvent(props) {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const { event, onDelete, isActive } = props;
+  const [showNewEventPopup, setShowNewEventPopup] = useState(false);
   const eventPath = `/events/${event.id}`;
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const auth = useContext(AuthContext);
@@ -39,6 +41,13 @@ export default function DisplayEvent(props) {
     } catch (e) {}
   };
 
+  const updateEventAfterUpdate = (startDate, endDate, name) => {
+    console.log("updated name in DisplayEvent", name);
+    event.name = name;
+    event.startDate = startDate;
+    event.endDate = endDate;
+  };
+
   return (
     <div>
       <Link to={eventPath}>
@@ -56,15 +65,33 @@ export default function DisplayEvent(props) {
               <BsThreeDotsVertical />
             </button>
             {toggleDropdown && (
-              <div>
-                <div className="absolute px-3 bg-white border rounded shadow-md">
+              <div className="absolute px-3 bg-white border rounded shadow-md">
+                <div className="dropdown-item">
                   <button onClick={handleDeleteEvent}>delete</button>
+                </div>
+                <div className="dropdown-item">
+                  <button
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      setShowNewEventPopup(!showNewEventPopup);
+                    }}
+                  >
+                    edit
+                  </button>
                 </div>
               </div>
             )}
           </div>
         </div>
       </Link>
+      {showNewEventPopup && (
+        <NewEventDate
+          setShowNewEventPopup={setShowNewEventPopup}
+          event={event}
+          onUpdate={updateEventAfterUpdate}
+        />
+      )}
     </div>
   );
 }

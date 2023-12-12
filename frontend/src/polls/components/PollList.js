@@ -14,7 +14,6 @@ export default function PollList(props) {
   }, [pollState]);
 
   const handleSelectPoll = (selectedPoll) => {
-    console.log(selectedPoll);
     pollDispatch({
       type: "SELECT_POLL",
       payload: selectedPoll,

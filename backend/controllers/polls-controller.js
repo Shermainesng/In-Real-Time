@@ -30,7 +30,6 @@ const createPoll = async (req, res, next) => {
   const { question, options, type } = req.body;
   const event = req.params.eventId;
   const createdPoll = new Poll({
-    // id: uuidv4(),
     event,
     question,
     options,
@@ -66,13 +65,13 @@ const createPoll = async (req, res, next) => {
 
 const updatePoll = async (req, res, next) => {
   const pollId = req.params.pollId;
-  const { question, options, results } = req.body;
+  const { question, options, results, response } = req.body;
 
   let updatedPoll;
   try {
     updatedPoll = await Poll.findByIdAndUpdate(
       pollId,
-      { $set: { question, options, results } },
+      { $set: { question, options, results, response } },
       { new: true, runValidators: true }
     );
     if (!updatedPoll) {
@@ -142,7 +141,6 @@ const getPollScores = async (req, res, next) => {
 const updatePollScores = async (req, res, next) => {
   const { resultsData } = req.body;
   const pollId = req.params.pollId;
-  console.log(pollId);
   let updatedPoll;
   try {
     const filter = { _id: pollId };

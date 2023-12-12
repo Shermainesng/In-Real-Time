@@ -36,7 +36,7 @@ router.post(
   ],
   eventsController.createEvent
 );
-
+router.patch("/:eventId", eventsController.updateEvent);
 router.delete("/:eventId", eventsController.deleteEvent);
 
 module.exports = router;

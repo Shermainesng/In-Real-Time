@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaWpforms } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import MultipleChoiceForm from "./MultipleChoiceForm";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useCustomContext } from "../../shared/context/CustomContext";
+import { FaPencilAlt } from "react-icons/fa";
+import FreeTextPoll from "./FreeTextPoll";
 
 const Poll = ({ poll }) => {
   const { pollState, pollDispatch } = useCustomContext();
@@ -12,13 +14,18 @@ const Poll = ({ poll }) => {
   const { sendRequest } = useHttpClient();
   const pollId = poll.id;
 
-  const toggleDropdown = () => {
-    console.log(showDropdown);
-    setShowDropdown(!showDropdown);
+  const handleClickOutside = (e) => {
+    if (showDropdown && !e.target.closest(".dropdown-icon")) {
+      setShowDropdown(false);
+    }
   };
-  const handleEdit = () => {
-    setShowNewPoll(!showNewPoll);
-  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, [showDropdown]);
 
   const handleDelete = async (e) => {
     e.preventDefault();
@@ -27,24 +34,28 @@ const Poll = ({ poll }) => {
         process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}`,
         "DELETE"
       );
-      console.log(responseData.pollId);
       pollDispatch({ type: "DELETE_POLL", payload: responseData.pollId });
     } catch (e) {
       console.log(e);
     }
-    toggleDropdown();
+    setShowDropdown(false);
   };
 
   return (
     <React.Fragment>
       {showNewPoll && (
         <div className="overlay">
-          <div className="w-full md:w-2/3 px-3 text-left">
-            <MultipleChoiceForm
-              setShowNewPoll={setShowNewPoll}
-              editMode={true}
-              poll={poll}
-            />
+          <div className="w-full my-3 md:w-2/3 px-3 text-left">
+            {poll.type === "Multiple Choice" && (
+              <MultipleChoiceForm
+                setShowNewPoll={setShowNewPoll}
+                editMode={true}
+                poll={poll}
+              />
+            )}
+            {poll.type === "Free Text" && (
+              <FreeTextPoll setShowNewPoll={setShowNewPoll} poll={poll} />
+            )}
           </div>
         </div>
       )}
@@ -55,9 +66,17 @@ const Poll = ({ poll }) => {
               <FaWpforms />
             </div>
           )}
+          {poll.type === "Free Text" && (
+            <div>
+              <FaPencilAlt />
+            </div>
+          )}
           <div className="px-2">{poll.type}</div>
           <div className="ml-auto pe-2">
-            <button onClick={toggleDropdown} class="icon-edit">
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              class="dropdown-icon icon-edit"
+            >
               <BsThreeDotsVertical />
             </button>
 
@@ -65,7 +84,7 @@ const Poll = ({ poll }) => {
               <div className="absolute right-0 px-3 pt-2 bg-white border rounded shadow-md">
                 <button
                   className="dropdown-item  button-custom"
-                  onClick={handleEdit}
+                  onClick={() => setShowNewPoll(!showNewPoll)}
                 >
                   <p>Edit</p>
                 </button>

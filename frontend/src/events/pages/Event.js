@@ -6,6 +6,7 @@ import MultipleChoiceForm from "../../polls/components/MultipleChoiceForm";
 import "./Event.css";
 import EventPageContent from "../components/EventPageContent";
 import CustomContext from "../../shared/context/CustomContext";
+import FreeTextPoll from "../../polls/components/FreeTextPoll";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -67,7 +68,6 @@ export default function Event() {
           process.env.REACT_APP_BACKEND_URL + `/${eventId}/polls`
         );
         const eventData = responseData.event;
-        // console.log("event.js" + eventData.name);
         setEvent(eventData);
       } catch (err) {}
     };
@@ -97,9 +97,9 @@ export default function Event() {
   }, []);
 
   //will run when pollState changes
-  useEffect(() => {
-    console.log("Pollstate in Event.js", pollState.polls);
-  }, [pollState]);
+  // useEffect(() => {
+  //   console.log("Pollstate in Event.js", pollState.polls);
+  // }, [pollState]);
 
   const handleSelection = (selected) => {
     setSelectedPollType(selected);
@@ -136,8 +136,15 @@ export default function Event() {
         {<EventPageContent eventId={eventId} />}
         {selectedPollType === "Multiple Choice" && showNewPoll && (
           <div className="overlay">
-            <div className="w-2/3 sm:w-1/3 md:w-1/3 px-3 text-left">
+            <div className="w-2/3 lg:w-1/3 px-3 text-left">
               <MultipleChoiceForm setShowNewPoll={setShowNewPoll} />
+            </div>
+          </div>
+        )}
+        {selectedPollType === "Free Text" && showNewPoll && (
+          <div className="overlay">
+            <div className="w-2/3 lg:w-1/3 px-3 text-left">
+              <FreeTextPoll setShowNewPoll={setShowNewPoll} />
             </div>
           </div>
         )}

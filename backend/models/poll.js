@@ -8,6 +8,7 @@ const pollSchema = new Schema({
   question: { type: String, required: true },
   options: { type: [String], required: false },
   results: { type: [Number], required: false },
+  responses: { type: [String], required: false },
   type: { type: String, required: true },
 });
 

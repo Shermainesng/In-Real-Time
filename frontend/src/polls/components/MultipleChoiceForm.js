@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./MultipleChoiceForm.css";
 import { BsXLg } from "react-icons/bs";
 import { useHttpClient } from "../../shared/hooks/http-hook";
@@ -15,12 +15,16 @@ export default function MultipleChoiceForm({ setShowNewPoll, editMode, poll }) {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const eventId = useParams().eventId;
 
-  console.log("results ", results);
-
   const handleOptionInput = (index, e) => {
     const newOptions = [...options];
     newOptions[index] = e.target.value;
     setOptions(newOptions);
+    //add new value for results if in editMode
+    if (editMode) {
+      const newResults = [...results];
+      newResults[index] = 0;
+      setResults(newResults);
+    }
   };
 
   const handleRemoveOption = async (index) => {
@@ -29,9 +33,8 @@ export default function MultipleChoiceForm({ setShowNewPoll, editMode, poll }) {
     const newOptions = options.filter((_, i) => i !== index);
     setOptions(newOptions);
     if (editMode) {
-      let resultsArr = await getResults();
-      resultsArr.splice(index, 1);
-      setResults(resultsArr);
+      const updatedResults = results.filter((result, i) => i !== index);
+      setResults(updatedResults);
     }
   };
 
@@ -39,21 +42,8 @@ export default function MultipleChoiceForm({ setShowNewPoll, editMode, poll }) {
     setOptions([...options, ""]);
   };
 
-  const getResults = async () => {
-    let responseData;
-    try {
-      responseData = await sendRequest(
-        process.env.REACT_APP_BACKEND_URL + `/polls/${poll.id}/results`
-      );
-    } catch (err) {
-      console.log(err);
-    }
-    return responseData;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("results submitted in submit ", results);
     try {
       let responseData;
       if (editMode) {
@@ -69,9 +59,10 @@ export default function MultipleChoiceForm({ setShowNewPoll, editMode, poll }) {
             "Content-Type": "application/json",
           }
         );
-        //after updating, need update the pollState
+        //after updating, need update the pollState and the selected poll
         const updatedPoll = responseData.poll;
         pollDispatch({ type: "UPDATE_POLL", payload: updatedPoll });
+        pollDispatch({ type: "SELECT_POLL", payload: updatedPoll });
       } else {
         responseData = await sendRequest(
           process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}/new`,

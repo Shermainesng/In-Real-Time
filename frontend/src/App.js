@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -21,9 +21,12 @@ import NewEventForm from "./events/pages/NewEvent";
 import Vote from "./polls/pages/Vote";
 
 import { useAuth } from "../src/shared/hooks/auth-hook";
+import { initialState, reducer } from "./shared/context/reducer";
+import { GlobalContextProvider } from "./shared/context/ContextProvider";
 
 function App() {
   const { token, login, logout, userId, userName } = useAuth();
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   let routes;
   if (token) {
@@ -72,23 +75,25 @@ function App() {
 
   return (
     <div className="App">
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <AuthContext.Provider
-          value={{
-            isLoggedIn: !!token,
-            token: token,
-            login: login,
-            logout: logout,
-            userName,
-            userId,
-          }}
-        >
-          <Router>
-            <Navigation />
-            <main>{routes}</main>
-          </Router>
-        </AuthContext.Provider>
-      </LocalizationProvider>
+      <GlobalContextProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <AuthContext.Provider
+            value={{
+              isLoggedIn: !!token,
+              token: token,
+              login: login,
+              logout: logout,
+              userName,
+              userId,
+            }}
+          >
+            <Router>
+              <Navigation />
+              <main>{routes}</main>
+            </Router>
+          </AuthContext.Provider>
+        </LocalizationProvider>
+      </GlobalContextProvider>
     </div>
   );
 }

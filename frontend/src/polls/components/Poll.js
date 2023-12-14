@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaWpforms } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import MultipleChoiceForm from "./MultipleChoiceForm";
@@ -6,18 +6,29 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useCustomContext } from "../../shared/context/CustomContext";
 import { FaPencilAlt } from "react-icons/fa";
 import FreeTextPoll from "./FreeTextPoll";
+import { FaPlayCircle } from "react-icons/fa";
+import { GlobalContext } from "../../shared/context/ContextProvider";
 
 const Poll = ({ poll }) => {
   const { pollState, pollDispatch } = useCustomContext();
+  const { globalState, globalDispatch } = useContext(GlobalContext);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNewPoll, setShowNewPoll] = useState(false);
   const { sendRequest } = useHttpClient();
   const pollId = poll.id;
 
+  console.log("globalState in pollList", globalState);
+
   const handleClickOutside = (e) => {
     if (showDropdown && !e.target.closest(".dropdown-icon")) {
       setShowDropdown(false);
     }
+  };
+  const handleSelectPoll = (selectedPoll) => {
+    globalDispatch({
+      type: "SET_SELECTED_POLL",
+      payload: selectedPoll,
+    });
   };
 
   useEffect(() => {
@@ -73,6 +84,12 @@ const Poll = ({ poll }) => {
           )}
           <div className="px-2">{poll.type}</div>
           <div className="ml-auto pe-2">
+            <button
+              className="play-button"
+              onClick={() => handleSelectPoll(poll)}
+            >
+              <FaPlayCircle />
+            </button>
             <button
               onClick={() => setShowDropdown(!showDropdown)}
               class="dropdown-icon icon-edit"

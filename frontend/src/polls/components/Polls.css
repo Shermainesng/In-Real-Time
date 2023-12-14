@@ -17,10 +17,10 @@ ul {
     max-height: 40rem;
   }
 
-.poll-card:hover {
+/* .poll-card:hover {
   background-color: #D3FF56
   ;
-}
+} */
 
 .icon-edit:hover{
   color: pink
@@ -28,4 +28,8 @@ ul {
 
 .button-custom p:hover {
   color: pink;
+}
+
+.play-button:hover {
+  color:pink
 }

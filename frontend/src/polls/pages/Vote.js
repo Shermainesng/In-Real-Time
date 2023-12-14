@@ -1,7 +1,10 @@
-import React, { useState, useEffect, useRef, useReducer } from "react";
+import React, { useState, useEffect, useContext, useReducer } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import CustomContext from "../../shared/context/CustomContext";
+import { useCustomContext } from "../../shared/context/CustomContext";
+import { GlobalContext } from "../../shared/context/ContextProvider";
+
 import io from "socket.io-client";
 
 function reducer(state, action) {
@@ -11,15 +14,17 @@ function reducer(state, action) {
         ...state,
         results: action.payload,
       };
+    case "SET_RESPONSES":
+      return {
+        ...state,
+        responses: action.payload,
+      };
     default:
       return state;
   }
 }
 
 export default function Vote() {
-  const location = useLocation();
-  const { question, options, type } = location.state;
-
   const [resultState, resultDispatch] = useReducer(reducer, {
     results: [],
     responses: [],
@@ -30,36 +35,57 @@ export default function Vote() {
     resultDispatch,
   };
 
+  const { globalState, globalDispatch } = useContext(GlobalContext);
+  const [selectedPoll, setSelectedPoll] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [updatedResults, setUpdatedResults] = useState([]);
+  const [response, setResponse] = useState("");
+  const [updatedResponses, setUpdatedResponses] = useState([]);
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
   const [totalVote, setTotalVote] = useState(0);
-  const [response, setResponse] = useState("");
-  const pollId = useParams().pollId;
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const socket = io.connect("http://localhost:3002");
 
-  //whenever resultState is updated, emit event to backend
+  console.log("selected poll in Vote.js", globalState);
   useEffect(() => {
-    socket.emit("result_updated", { results: resultState.results });
-  }, [resultState.results]);
+    setSelectedPoll(globalState.selectedPoll);
+  }, [globalState]);
+
+  let pollId;
+  if (selectedPoll) {
+    pollId = selectedPoll.id;
+  }
+
+  useEffect(() => {
+    socket.emit("result_updated", { resultState });
+  }, [resultState]);
 
   //listen to events and get updated results
   useEffect(() => {
     socket.on("message_received", (data) => {
-      console.log("results are updated", data.results);
-      setUpdatedResults(data.results);
+      console.log("results are updated", data);
+      setUpdatedResults(data.resultState.results);
+      setUpdatedResponses(data.resultState.responses);
     });
   }, [socket]);
 
-  //get results when component first mounts
+  //get results/responses when component first mounts
   useEffect(() => {
     const getResults = async () => {
+      let responseData;
       try {
-        const responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}/results`
+        responseData = await sendRequest(
+          process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}`
         );
-        resultDispatch({ type: "SET_RESULTS", payload: responseData });
+        console.log("got from backend", responseData);
+        resultDispatch({
+          type: "SET_RESULTS",
+          payload: responseData.poll.results,
+        });
+        resultDispatch({
+          type: "SET_RESPONSES",
+          payload: responseData.poll.responses,
+        });
         setTotalVote(getTotalVoteCount());
       } catch (err) {}
     };
@@ -71,27 +97,32 @@ export default function Vote() {
   let resultsData;
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (type !== "Free Text" && !showResults) {
-      setShowResults(true);
-      resultsData = resultState.results;
-      resultsData[selectedOptionIdx]++;
-      updateResults(resultsData);
-    } else {
-      try {
-        const responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}`,
-          "PATCH",
-          JSON.stringify({
-            response,
-          }),
-          {
-            "Content-Type": "application/json",
-          }
-        );
-        console.log(responseData);
-      } catch (err) {
-        console.log(err);
+    if (!showResults) {
+      if (selectedPoll && selectedPoll.type !== "Free Text") {
+        resultsData = resultState.results;
+        resultsData[selectedOptionIdx]++;
+        updateResults(resultsData);
+      } else {
+        try {
+          const responseData = await sendRequest(
+            process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}`,
+            "PATCH",
+            JSON.stringify({
+              response,
+            }),
+            {
+              "Content-Type": "application/json",
+            }
+          );
+          resultDispatch({
+            type: "SET_RESPONSES",
+            payload: responseData.poll.responses,
+          });
+        } catch (err) {
+          console.log(err);
+        }
       }
+      setShowResults(true);
     }
   };
 
@@ -127,11 +158,11 @@ export default function Vote() {
     <CustomContext.Provider value={providerState}>
       <div className="h-screen flex items-center justify-center bg-purple">
         <div className="h-50 w-full sm:w-3/3 md:w-2/3 border-2 border-navy-blue">
-          {/* <button onClick={sendMessage}>send message</button> */}
           <form onSubmit={handleSubmit}>
-            <div>{question}</div>
-            {options &&
-              options.map((option, index) => (
+            <div>{selectedPoll && selectedPoll.question}</div>
+            {selectedPoll &&
+              selectedPoll.options &&
+              selectedPoll.options.map((option, index) => (
                 <div>
                   <label>
                     <input
@@ -152,7 +183,7 @@ export default function Vote() {
                   </label>
                 </div>
               ))}
-            {type === "Free Text" && (
+            {selectedPoll && selectedPoll.type === "Free Text" && (
               <div>
                 <textarea
                   className="bg-white input input-bordered input-info w-2/3"
@@ -164,6 +195,12 @@ export default function Vote() {
                   placeholder="Type your answer..."
                   onChange={(e) => setResponse(e.target.value)}
                 ></textarea>
+                {showResults &&
+                  updatedResponses &&
+                  updatedResponses.length > 0 &&
+                  updatedResponses.map((userResponse) => (
+                    <div>{userResponse}</div>
+                  ))}
               </div>
             )}
             <button type="submit">Submit</button>

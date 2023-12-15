@@ -44,7 +44,12 @@ export default function Vote() {
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
   const [totalVote, setTotalVote] = useState(0);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
-  const socket = io.connect("http://localhost:3002");
+  let socket;
+  if (process.env === "production") {
+    socket = io.connect("https://in-real-time-api.onrender.com");
+  } else {
+    socket = io.connect("http://localhost:7005");
+  }
 
   // console.log("selected poll in Vote.js", globalState);
   //store state in localStorage whenever it changes

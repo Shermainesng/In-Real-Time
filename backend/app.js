@@ -29,16 +29,6 @@ mongoose.connection.once("open", () => {
   console.log("connected!");
 });
 
-// app.options("*", (req, res) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-//   );
-//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
-//   res.sendStatus(200);
-// });
-
 app.use("/api/events", eventsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/polls", pollsRoutes);
@@ -58,24 +48,14 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "an unknown error occurred" });
 });
 
-// mongoose
-//   .connect(
-//     "mongodb+srv://mainUser:newuser@cluster0.807aapy.mongodb.net/?retryWrites=true&w=majority"
-//   )
-//   .then(() => {
-//     app.listen(7005);
-//   })
-//   .catch((err) => {
-//     console.log("error is here " + err);
-//   });
 console.log("MONGODB_URI:", process.env.MONGODB_URI);
 console.log("PORT:", process.env.PORT);
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log(`Server is running on port ${process.env.PORT}`);
-    });
+    // app.listen(process.env.PORT, () => {
+    //   console.log(`Server is running on port ${process.env.PORT}`);
+    // });
   })
   .catch((err) => {
     console.log("Error connecting to MongoDB: " + err);
@@ -104,7 +84,10 @@ io.on("connection", (socket) => {
     io.emit("message_received", { resultState });
   });
 });
-// const SOCKET_IO_PORT = 3002;
-server.listen(process.env.SOCKET_IO_PORT, () => {
-  console.log(`Socket.IO server running on port ${process.env.SOCKET_IO_PORT}`);
+const PORT = process.env.PORT || 7005;
+server.listen(PORT, () => {
+  console.log(`Server and Socket.IO server running on port ${PORT}`);
 });
+// server.listen(process.env.SOCKET_IO_PORT, () => {
+//   console.log(`Socket.IO server running on port ${process.env.SOCKET_IO_PORT}`);
+// });

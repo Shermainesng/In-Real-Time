@@ -45,7 +45,8 @@ export default function Vote() {
   const [totalVote, setTotalVote] = useState(0);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   let socket;
-  if (process.env === "production") {
+  if (process.env.NODE_ENV === "production") {
+    console.log("hit correct condition");
     socket = io.connect("https://in-real-time-api.onrender.com");
   } else {
     socket = io.connect("http://localhost:7005");

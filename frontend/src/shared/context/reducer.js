@@ -1,3 +1,4 @@
+//reducer for selected poll
 const initialState = {
   selectedPoll: null,
 };

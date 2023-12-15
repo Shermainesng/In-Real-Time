@@ -86,7 +86,10 @@ app.use(cors());
 const server = http.createServer(app); //create server
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Replace with your frontend's URL
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://in-real-time-frontend.vercel.app"
+        : "http://localhost:3000",
     methods: ["GET", "POST"],
     credentials: true,
   },

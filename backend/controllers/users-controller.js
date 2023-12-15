@@ -80,7 +80,12 @@ const signup = async (req, res, next) => {
   }
   res
     .status(201)
-    .json({ userId: createdUser.id, email: createdUser.email, token: token });
+    .json({
+      userId: createdUser.id,
+      email: createdUser.email,
+      name: createdUser.name,
+      token: token,
+    });
 };
 
 const login = async (req, res, next) => {

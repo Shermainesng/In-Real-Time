@@ -9,6 +9,7 @@ export const useAuth = () => {
   const [userName, setUserName] = useState(false);
 
   const login = useCallback((userId, userName, token, expirationDate) => {
+    console.log("reached login in auth-hook");
     setToken(token);
     setUserId(userId);
     setUserName(userName);
@@ -46,7 +47,6 @@ export const useAuth = () => {
   }, [token, logout, tokenExpirationDate]);
 
   useEffect(() => {
-    console.log("useEffect being ran");
     const storedData = JSON.parse(localStorage.getItem("userData")); //text - convert to object
     console.log(storedData);
     if (

@@ -76,9 +76,8 @@ const Auth = () => {
             "Content-Type": "application/json",
           }
         );
-        console.log(responseData);
-        auth.login(responseData.userId, responseData.token);
-        auth.setUserName(responseData.user.name);
+        console.log("signed up", responseData);
+        auth.login(responseData.userId, responseData.name, responseData.token);
       } catch (err) {}
     }
   };

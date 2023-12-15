@@ -39,7 +39,19 @@ const getPollById = async (req, res, next) => {
     );
     return next(error);
   }
-  res.status(201).json({ poll });
+  //if results are null, fill the length of options with 0 and return it - [0,0,0]
+  let pollResults;
+  if (
+    (poll.results.length === 0 || poll.results[0] === null) &&
+    poll.options &&
+    poll.options.length > 0
+  ) {
+    console.log("poll does not have results yet - initializing array");
+    pollResults = new Array(poll.options.length).fill(0);
+  } else {
+    pollResults = poll.results;
+  }
+  res.status(201).json({ poll, pollResults });
 };
 
 const createPoll = async (req, res, next) => {
@@ -81,17 +93,20 @@ const createPoll = async (req, res, next) => {
 
 const updatePoll = async (req, res, next) => {
   const pollId = req.params.pollId;
-  const { question, options, results, response } = req.body;
+  const { question, options, response, resultsData } = req.body;
   let updatedPoll;
   try {
-    updatedPoll = await Poll.findByIdAndUpdate(
-      pollId,
-      {
-        $set: { question, options, results },
-        $push: { responses: response },
-      },
-      { new: true, runValidators: true }
-    );
+    const updateObject = {
+      $set: { question, options, results: resultsData },
+    };
+    if (response !== "") {
+      updateObject.$push = { responses: response };
+    }
+
+    updatedPoll = await Poll.findByIdAndUpdate(pollId, updateObject, {
+      new: true,
+      runValidators: true,
+    });
     if (!updatedPoll) {
       const error = new HttpError("Poll not found.", 404);
       return next(error);
@@ -156,33 +171,8 @@ const getPollScores = async (req, res, next) => {
   res.status(201).json(pollResults);
 };
 
-const updatePollScores = async (req, res, next) => {
-  const { resultsData } = req.body;
-  const pollId = req.params.pollId;
-  let updatedPoll;
-  try {
-    const filter = { _id: pollId };
-    if (!filter) {
-      console.log("poll not found");
-      return null;
-    }
-    const update = { $set: { results: resultsData } };
-    const updatedData = await Poll.updateOne(filter, update);
-    console.log("updated");
-    updatedPoll = await Poll.findOne(filter);
-    console.log(updatedPoll);
-  } catch (err) {
-    console.log(err);
-    const error = new HttpError("sth went wrong with retrieving poll", 500);
-    return next(error);
-  }
-  res.status(201).json(updatedPoll);
-};
-
 exports.createPoll = createPoll;
 exports.updatePoll = updatePoll;
 exports.getPollById = getPollById;
 exports.deletePoll = deletePoll;
 exports.getAllPollsByEventId = getAllPollsByEventId;
-exports.getPollScores = getPollScores;
-exports.updatePollScores = updatePollScores;

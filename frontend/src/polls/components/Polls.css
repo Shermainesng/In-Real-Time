@@ -33,3 +33,24 @@ ul {
 .play-button:hover {
   color:pink
 }
+
+.launch-poll {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-info {
+  display: none;
+  position: absolute;
+  /* z-index: 1; */
+  color:black;
+}
+
+.dropdown-info p {
+  font-size: 60%
+}
+
+
+.launch-poll:hover .dropdown-info{
+  display: block;
+}

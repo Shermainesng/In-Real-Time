@@ -96,11 +96,12 @@ io.on("connection", (socket) => {
   console.log("a user connected");
 
   socket.on("result_updated", (data) => {
-    console.log("message emitted from backend", data);
-    socket.broadcast.emit("message_received", data);
+    const resultState = data.resultState;
+    console.log("message emitted from backend", resultState);
+    io.emit("message_received", { resultState });
   });
 });
-const SOCKET_IO_PORT = 3002;
-server.listen(SOCKET_IO_PORT, () => {
-  console.log(`Socket.IO server running on port ${SOCKET_IO_PORT}`);
+// const SOCKET_IO_PORT = 3002;
+server.listen(process.env.SOCKET_IO_PORT, () => {
+  console.log(`Socket.IO server running on port ${process.env.SOCKET_IO_PORT}`);
 });

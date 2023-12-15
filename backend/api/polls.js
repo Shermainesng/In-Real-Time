@@ -10,7 +10,5 @@ router.get("/:pollId", pollsController.getPollById);
 router.post("/:eventId/new", pollsController.createPoll);
 router.patch("/:pollId", pollsController.updatePoll);
 router.delete("/:pollId", pollsController.deletePoll);
-router.get("/:pollId/results", pollsController.getPollScores);
-router.post("/:pollId/results", pollsController.updatePollScores);
 
 module.exports = router;

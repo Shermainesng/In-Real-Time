@@ -50,9 +50,6 @@ function App() {
         <Route path="/events/:pollId/vote" exact>
           <Vote />
         </Route>
-        <Route path="/polls/new" exact>
-          <NewPoll />
-        </Route>
         <Redirect to="/" />
       </Switch>
     );
@@ -65,9 +62,10 @@ function App() {
         <Route path="/auth" exact>
           <Auth />
         </Route>
-        <Route path="/events/:pollId/vote" exact>
+        <Route path="/events/:eventId/vote" exact>
           <Vote />
         </Route>
+        <Route path="/about" exact></Route>
         <Redirect to="/auth" />
       </Switch>
     );

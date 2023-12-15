@@ -3,7 +3,6 @@ const Poll = require("../models/poll");
 const Event = require("../models/event");
 
 const getAllPollsByEventId = async (req, res, next) => {
-  console.log("getting all polls by Event ID");
   const eventId = req.params.eventId;
   let eventWithPolls;
   try {
@@ -24,6 +23,23 @@ const getAllPollsByEventId = async (req, res, next) => {
       poll.toObject({ getters: true })
     ),
   });
+};
+
+const getPollById = async (req, res, next) => {
+  const pollId = req.params.pollId;
+  console.log("getpollbyid");
+
+  let poll;
+  try {
+    poll = await Poll.findById(pollId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find a place.",
+      500
+    );
+    return next(error);
+  }
+  res.status(201).json({ poll });
 };
 
 const createPoll = async (req, res, next) => {
@@ -66,12 +82,14 @@ const createPoll = async (req, res, next) => {
 const updatePoll = async (req, res, next) => {
   const pollId = req.params.pollId;
   const { question, options, results, response } = req.body;
-
   let updatedPoll;
   try {
     updatedPoll = await Poll.findByIdAndUpdate(
       pollId,
-      { $set: { question, options, results, response } },
+      {
+        $set: { question, options, results },
+        $push: { responses: response },
+      },
       { new: true, runValidators: true }
     );
     if (!updatedPoll) {
@@ -163,6 +181,7 @@ const updatePollScores = async (req, res, next) => {
 
 exports.createPoll = createPoll;
 exports.updatePoll = updatePoll;
+exports.getPollById = getPollById;
 exports.deletePoll = deletePoll;
 exports.getAllPollsByEventId = getAllPollsByEventId;
 exports.getPollScores = getPollScores;

@@ -7,6 +7,7 @@ import "./Event.css";
 import EventPageContent from "../components/EventPageContent";
 import CustomContext from "../../shared/context/CustomContext";
 import FreeTextPoll from "../../polls/components/FreeTextPoll";
+import Vote from "../../polls/pages/Vote";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -33,11 +34,6 @@ function reducer(state, action) {
         (poll) => poll.id !== action.payload
       );
       return { ...state, polls: filteredPolls };
-    case "SELECT_POLL":
-      return {
-        ...state,
-        selectedPoll: action.payload,
-      };
     default:
       return state;
   }
@@ -46,7 +42,6 @@ function reducer(state, action) {
 export default function Event() {
   const [pollState, pollDispatch] = useReducer(reducer, {
     polls: [],
-    selectedPoll: null,
   });
 
   const providerState = {
@@ -58,28 +53,15 @@ export default function Event() {
   const [event, setEvent] = useState({});
   const [showNewPoll, setShowNewPoll] = useState(false);
   const [selectedPollType, setSelectedPollType] = useState("");
+  const [renderComponent, setRenderComponent] = useState(false);
   const eventId = useParams().eventId;
-
-  //getting event object
-  useEffect(() => {
-    const getEvent = async () => {
-      try {
-        const responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + `/${eventId}/polls`
-        );
-        const eventData = responseData.event;
-        setEvent(eventData);
-      } catch (err) {}
-    };
-    getEvent();
-  }, []);
 
   //set initial state of polls
   useEffect(() => {
     const fetchPolls = async () => {
       try {
         const response = await fetch(
-          process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}`
+          process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}/all`
         );
         const data = await response.json();
         pollDispatch({
@@ -148,6 +130,7 @@ export default function Event() {
             </div>
           </div>
         )}
+        {renderComponent && <Vote />}
       </div>
     </CustomContext.Provider>
   );

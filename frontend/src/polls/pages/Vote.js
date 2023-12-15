@@ -46,110 +46,111 @@ export default function Vote() {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const socket = io.connect("http://localhost:3002");
 
-  console.log("selected poll in Vote.js", globalState);
-  useEffect(() => {
-    setSelectedPoll(globalState.selectedPoll);
-  }, [globalState]);
+  // console.log("selected poll in Vote.js", globalState);
+  //store state in localStorage whenever it changes
+  // useEffect(() => {
+  //   localStorage.setItem("selectedPoll", JSON.stringify(globalState));
+  // }, [globalState]);
 
-  let pollId;
-  if (selectedPoll) {
-    pollId = selectedPoll.id;
-  }
+  useEffect(() => {
+    if (!globalState.selectedPoll) {
+      const storedState = localStorage.getItem("selectedPoll");
+      if (storedState) {
+        console.log("from local storage", JSON.parse(storedState));
+        const selected = JSON.parse(storedState);
+        setSelectedPoll(selected.selectedPoll);
+      }
+    } else {
+      setSelectedPoll(globalState.selectedPoll);
+      console.log("saving in local storage", globalState);
+      localStorage.setItem("selectedPoll", JSON.stringify(globalState));
+    }
+  }, [globalState]);
 
   useEffect(() => {
     socket.emit("result_updated", { resultState });
-  }, [resultState]);
+  }, [resultState, resultDispatch]);
 
-  //listen to events and get updated results
+  //listen to events and get updated results whenever results are updated
   useEffect(() => {
     socket.on("message_received", (data) => {
-      console.log("results are updated", data);
+      console.log("received from backend", data);
       setUpdatedResults(data.resultState.results);
       setUpdatedResponses(data.resultState.responses);
+      setTotalVote(getTotalVoteCount(data.resultState.results));
     });
   }, [socket]);
 
   //get results/responses when component first mounts
   useEffect(() => {
-    const getResults = async () => {
-      let responseData;
-      try {
-        responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}`
-        );
-        console.log("got from backend", responseData);
-        resultDispatch({
-          type: "SET_RESULTS",
-          payload: responseData.poll.results,
-        });
-        resultDispatch({
-          type: "SET_RESPONSES",
-          payload: responseData.poll.responses,
-        });
-        setTotalVote(getTotalVoteCount());
-      } catch (err) {}
-    };
-    getResults();
-  }, []);
-
-  //get the counts for that index, and update it (+1 to selected option)
-  //   /:pollId/results
-  let resultsData;
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!showResults) {
-      if (selectedPoll && selectedPoll.type !== "Free Text") {
-        resultsData = resultState.results;
-        resultsData[selectedOptionIdx]++;
-        updateResults(resultsData);
-      } else {
+    if (selectedPoll) {
+      const getResults = async () => {
+        let responseData;
         try {
-          const responseData = await sendRequest(
-            process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}`,
-            "PATCH",
-            JSON.stringify({
-              response,
-            }),
-            {
-              "Content-Type": "application/json",
-            }
+          responseData = await sendRequest(
+            process.env.REACT_APP_BACKEND_URL + `/polls/${selectedPoll.id}`
           );
+          console.log("getting results from backend", responseData);
+          resultDispatch({
+            type: "SET_RESULTS",
+            payload: responseData.pollResults,
+          });
           resultDispatch({
             type: "SET_RESPONSES",
             payload: responseData.poll.responses,
           });
-        } catch (err) {
-          console.log(err);
-        }
+          // setTotalVote(getTotalVoteCount(responseData.pollResults));
+        } catch (err) {}
+      };
+      getResults();
+    }
+  }, [selectedPoll]);
+
+  //get the counts for that index, and update it (+1 to selected option)
+  //   /:pollId/results
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let resultsData;
+    if (!showResults) {
+      if (selectedPoll && selectedPoll.type === "Multiple Choice") {
+        resultsData = resultState.results;
+        resultsData[selectedOptionIdx]++;
+        console.log(resultsData);
+      }
+      try {
+        const responseData = await sendRequest(
+          process.env.REACT_APP_BACKEND_URL + `/polls/${selectedPoll.id}`,
+          "PATCH",
+          JSON.stringify({
+            response,
+            resultsData,
+          }),
+          {
+            "Content-Type": "application/json",
+          }
+        );
+        console.log("results from update poll", responseData);
+        resultDispatch({
+          type: "SET_RESPONSES",
+          payload: responseData.poll.responses,
+        });
+        resultDispatch({
+          type: "SET_RESULTS",
+          payload: responseData.poll.results,
+        });
+      } catch (err) {
+        console.log(err);
       }
       setShowResults(true);
     }
   };
 
-  const updateResults = async (resultsData) => {
-    try {
-      const responseData = await sendRequest(
-        process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}/results`,
-        "POST",
-        JSON.stringify({
-          resultsData,
-        }),
-        {
-          "Content-Type": "application/json",
-        }
-      );
-      resultDispatch({ type: "SET_RESULTS", payload: responseData.results });
-      setTotalVote(getTotalVoteCount());
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const getTotalVoteCount = () => {
-    let resultsArray = resultState.results;
+  const getTotalVoteCount = (resultsArr) => {
     let sum = 0;
-    for (let i = 0; i < resultsArray.length; i++) {
-      sum += parseInt(resultsArray[i]);
+    if (resultsArr) {
+      for (let i = 0; i < resultsArr.length; i++) {
+        sum += parseInt(resultsArr[i]);
+      }
     }
     return sum;
   };
@@ -158,6 +159,9 @@ export default function Vote() {
     <CustomContext.Provider value={providerState}>
       <div className="h-screen flex items-center justify-center bg-purple">
         <div className="h-50 w-full sm:w-3/3 md:w-2/3 border-2 border-navy-blue">
+          {!selectedPoll && (
+            <div>There are no active polls at the moment. </div>
+          )}
           <form onSubmit={handleSubmit}>
             <div>{selectedPoll && selectedPoll.question}</div>
             {selectedPoll &&
@@ -174,27 +178,33 @@ export default function Vote() {
                     />
                     {option}
                     {showResults && updatedResults.length > 0 && (
-                      <progress
-                        className="progress w-56"
-                        value={updatedResults[index]}
-                        max={totalVote}
-                      ></progress>
+                      <div>
+                        <progress
+                          className="progress w-56"
+                          value={updatedResults[index]}
+                          max={totalVote}
+                        ></progress>
+                        <span>{updatedResults[index]}</span>
+                      </div>
                     )}
                   </label>
                 </div>
               ))}
+            {/* <span>{totalVote}</span> */}
             {selectedPoll && selectedPoll.type === "Free Text" && (
               <div>
-                <textarea
-                  className="bg-white input input-bordered input-info w-2/3"
-                  id="response"
-                  name="response"
-                  value={response}
-                  rows="10"
-                  cols="20"
-                  placeholder="Type your answer..."
-                  onChange={(e) => setResponse(e.target.value)}
-                ></textarea>
+                {!showResults && (
+                  <textarea
+                    className="bg-white input input-bordered input-info w-2/3"
+                    id="response"
+                    name="response"
+                    value={response}
+                    rows="10"
+                    cols="20"
+                    placeholder="Type your answer..."
+                    onChange={(e) => setResponse(e.target.value)}
+                  ></textarea>
+                )}
                 {showResults &&
                   updatedResponses &&
                   updatedResponses.length > 0 &&

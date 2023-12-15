@@ -15,9 +15,9 @@ const Navigation = (props) => {
   const auth = useContext(AuthContext);
 
   const [navigationItems, setNavigationItems] = useState([
-    { name: "polls", href: "/polls", current: true, index: 0 },
+    { name: "events", href: "/events", current: false, index: 0 },
     { name: "about", href: "/about", current: false, index: 1 },
-    { name: "+ new poll", href: "/polls/new", current: false, index: 2 },
+    { name: "how it works", href: "/about", current: false, index: 2 },
   ]);
 
   const handleLinkClick = (index) => {

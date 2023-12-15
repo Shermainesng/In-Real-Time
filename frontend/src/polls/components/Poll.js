@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import "./Polls.css";
 import { FaWpforms } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import MultipleChoiceForm from "./MultipleChoiceForm";
@@ -16,8 +17,6 @@ const Poll = ({ poll }) => {
   const [showNewPoll, setShowNewPoll] = useState(false);
   const { sendRequest } = useHttpClient();
   const pollId = poll.id;
-
-  console.log("globalState in pollList", globalState);
 
   const handleClickOutside = (e) => {
     if (showDropdown && !e.target.closest(".dropdown-icon")) {
@@ -83,22 +82,29 @@ const Poll = ({ poll }) => {
             </div>
           )}
           <div className="px-2">{poll.type}</div>
-          <div className="ml-auto pe-2">
-            <button
-              className="play-button"
-              onClick={() => handleSelectPoll(poll)}
-            >
-              <FaPlayCircle />
-            </button>
-            <button
-              onClick={() => setShowDropdown(!showDropdown)}
-              class="dropdown-icon icon-edit"
-            >
-              <BsThreeDotsVertical />
-            </button>
+          <div className="flex flex-row ml-auto pe-2">
+            <div class="launch-poll">
+              <button
+                className="play-button"
+                onClick={() => handleSelectPoll(poll)}
+              >
+                <FaPlayCircle />
+              </button>
+              <div className="dropdown-info absolute right-0">
+                <p>Activate poll</p>
+              </div>
+            </div>
+            <div>
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                class="dropdown-icon icon-edit"
+              >
+                <BsThreeDotsVertical />
+              </button>
+            </div>
 
             {showDropdown && (
-              <div className="absolute right-0 px-3 pt-2 bg-white border rounded shadow-md">
+              <div className="absolute right-0 px-3 pt-2 bg-white border rounded shadow-md z-10">
                 <button
                   className="dropdown-item  button-custom"
                   onClick={() => setShowNewPoll(!showNewPoll)}

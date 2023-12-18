@@ -15,3 +15,19 @@ code {
   font-family: Questrial, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.carousel-content {
+  /* background-color: red; */
+  border: 3px solid #071FFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 5px;
+  padding: 50px 50px;
+  margin: 0px auto;
+  font-family: sans-serif;
+  margin: 0 50px;
+  color: #071FFF;
+  height: 20rem;
+}

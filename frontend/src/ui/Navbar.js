@@ -30,7 +30,10 @@ const Navigation = (props) => {
   };
 
   return (
-    <Disclosure as="nav" className="bg-bright-yellow">
+    <Disclosure
+      as="nav"
+      className="bg-bright-yellow border-b-4 border-navy-blue"
+    >
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -78,9 +81,9 @@ const Navigation = (props) => {
 
               <div>
                 {auth.isLoggedIn ? (
-                  <button onClick={auth.logout}>{auth.userName}, LOGOUT</button>
+                  <button onClick={auth.logout}>{auth.userName}, logout</button>
                 ) : (
-                  <NavLink to="/auth">LOGIN</NavLink>
+                  <NavLink to="/auth">login</NavLink>
                 )}
               </div>
 
@@ -97,11 +100,11 @@ const Navigation = (props) => {
                     <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
-                      <img
+                      {/* <img
                         className="h-8 w-8 rounded-full"
                         src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                         alt=""
-                      />
+                      /> */}
                     </Menu.Button>
                   </div>
                   <Transition

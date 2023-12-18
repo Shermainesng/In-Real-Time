@@ -12,5 +12,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [
+    require("daisyui"),
+    ["@babel/plugin-transform-react-jsx", { throwIfNamespace: false }],
+  ],
 };

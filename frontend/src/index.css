@@ -2,20 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Questrial&display=swap');
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Questrial', sans-serif;
 }
 
 code {
-  font-family: Questrial, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'Questrial', sans-serif;
 }
 
+body div{
+  font-family: 'Questrial', sans-serif;
+}
+
+.logo-title{
+  font-family:'Anton', sans-serif;
+}
 
 .carousel-content {
   /* background-color: red; */
@@ -26,7 +31,7 @@ code {
   border-radius: 5px;
   padding: 50px 50px;
   margin: 0px auto;
-  font-family: sans-serif;
+  /* font-family: sans-serif; */
   margin: 0 50px;
   color: #071FFF;
   height: 20rem;

@@ -26,13 +26,13 @@ ul {
   color: pink
 }
 
-.button-custom p:hover {
+/* .button-custom p:hover {
   color: pink;
 }
 
 .play-button:hover {
   color:pink
-}
+} */
 
 .launch-poll {
   position: relative;

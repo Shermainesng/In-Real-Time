@@ -4,6 +4,10 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import React, { useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../shared/context/auth-context";
+import "./Navbar.css";
+import { FaUserCircle } from "react-icons/fa";
+import { FaRegCircleUser } from "react-icons/fa6";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -16,16 +20,14 @@ const Navigation = (props) => {
 
   const [navigationItems, setNavigationItems] = useState([
     { name: "events", href: "/events", current: false, index: 0 },
-    { name: "about", href: "/about", current: false, index: 1 },
-    { name: "how it works", href: "/about", current: false, index: 2 },
+    { name: "about", href: "/", current: false, index: 1 },
+    { name: "how it works", href: "/more", current: false, index: 2 },
   ]);
 
   const handleLinkClick = (index) => {
     const updatedItems = navigationItems.map((item, i) =>
       i === index ? { ...item, current: true } : { ...item, current: false }
     );
-    console.log(index);
-
     setNavigationItems(updatedItems);
   };
 
@@ -50,13 +52,13 @@ const Navigation = (props) => {
                   )}
                 </Disclosure.Button>
               </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start text-lg ms-4">
                 <div className="flex flex-shrink-0 items-center">
-                  <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="in real time"
-                  />
+                  <div className="logo-title me-2">
+                    <Link className="no-underline text-navy-blue " to="/">
+                      in real time
+                    </Link>
+                  </div>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
@@ -64,15 +66,15 @@ const Navigation = (props) => {
                       <div
                         key={item.name}
                         className={classNames(
-                          "rounded-md px-3 py-2 text-sm font-medium text-navy-blue",
-                          item.current
-                            ? "bg-pink-200"
-                            : "bg-pink-50 hover:bg-pink-200"
+                          "rounded-md me-4 text-navy-blue hover-underline-animation",
+                          item.current ? "bg-light-green" : ""
                         )}
                         aria-current={item.current ? "page" : undefined}
                         onClick={() => handleLinkClick(item.index)}
                       >
-                        <NavLink to={item.href}>{item.name}</NavLink>
+                        <NavLink className="no-underline" to={item.href}>
+                          {item.name}
+                        </NavLink>
                       </div>
                     ))}
                   </div>
@@ -81,9 +83,14 @@ const Navigation = (props) => {
 
               <div>
                 {auth.isLoggedIn ? (
-                  <button onClick={auth.logout}>{auth.userName}, logout</button>
+                  <button onClick={auth.logout}>
+                    <FaUserCircle className="text-navy-blue text-3xl" />
+                  </button>
                 ) : (
-                  <NavLink to="/auth">login</NavLink>
+                  <NavLink to="/auth">
+                    {" "}
+                    <FaRegCircleUser className="text-navy-blue text-3xl" />
+                  </NavLink>
                 )}
               </div>
 

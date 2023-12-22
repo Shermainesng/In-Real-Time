@@ -16,14 +16,21 @@ export default function PollList(props) {
   }, [pollState]);
 
   return (
-    <div className="z-0 relative card flex-1 card bg-base-100 shadow-xl custom-max-height-70 overflow-y-auto">
+    <div className="z-0 relative flex-1 card bg-base-100 shadow-xl custom-max-height-70 w-full">
       <div className="card-body">
+        <div className="text-sm">
+          Click on the play button to make your poll visible for your guests.
+          Click on the pause button to deactivate your poll.
+        </div>
         {localPolls.length > 0 &&
           localPolls.map((poll) => (
             <div key={poll.id}>
               <Poll poll={poll} />
             </div>
           ))}
+        {localPolls.length === 0 && (
+          <div>You have no polls yet. Start adding some!</div>
+        )}
       </div>
     </div>
   );

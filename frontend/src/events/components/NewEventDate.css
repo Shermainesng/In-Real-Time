@@ -1,9 +1,10 @@
 .overlay {
-    position: fixed;
+    /* position: fixed; */
+    /* position:none !important; */
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    /* width: 100%;
+    height: 100%; */
     background: rgba(137, 135, 135, 0.8); /* Semi-transparent white background */
     display: flex;
     justify-content: center;

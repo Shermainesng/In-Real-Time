@@ -9,6 +9,14 @@ import { FaPencilAlt } from "react-icons/fa";
 import FreeTextPoll from "./FreeTextPoll";
 import { FaPlayCircle } from "react-icons/fa";
 import { GlobalContext } from "../../shared/context/ContextProvider";
+import io from "socket.io-client";
+let socket;
+if (process.env.NODE_ENV === "production") {
+  console.log("hit correct condition");
+  socket = io.connect("https://in-real-time-api.onrender.com");
+} else {
+  socket = io.connect("http://localhost:7005");
+}
 
 const Poll = ({ poll }) => {
   const { pollState, pollDispatch } = useCustomContext();
@@ -29,6 +37,17 @@ const Poll = ({ poll }) => {
       payload: selectedPoll,
     });
   };
+
+  //to handle when host launches a poll
+  useEffect(() => {
+    socket.emit("poll_selected", { globalState });
+  }, [globalState]);
+
+  // useEffect(() => {
+  //   socket.on("selected_poll_received", (data) => {
+  //     console.log("received from backend", data);
+  //   });
+  // }, [socket]);
 
   useEffect(() => {
     window.addEventListener("click", handleClickOutside);

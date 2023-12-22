@@ -9,6 +9,7 @@ module.exports = {
         "light-green": "#A9E1EE",
         pink: "#FBB5ED",
         purple: "#CEB3FF",
+        brown: "#D19931",
       },
     },
   },

@@ -11,7 +11,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import Navigation from "./ui/Navbar";
 import Home from "./Home";
 import Events from "./events/pages/Events";
-import NewPoll from "./polls/pages/NewPoll";
 import Auth from "./user/pages/Auth";
 import Event from "./events/pages/Event";
 import { AuthContext } from "./shared/context/auth-context";
@@ -23,6 +22,7 @@ import Vote from "./polls/pages/Vote";
 import { useAuth } from "../src/shared/hooks/auth-hook";
 import { initialState, reducer } from "./shared/context/reducer";
 import { GlobalContextProvider } from "./shared/context/ContextProvider";
+import More from "./user/pages/More";
 
 function App() {
   const { token, login, logout, userId, userName } = useAuth();
@@ -34,6 +34,9 @@ function App() {
       <Switch>
         <Route path="/" exact>
           <Home />
+        </Route>
+        <Route path="/more" exact>
+          <More />
         </Route>
         <Route path="/events/users/" exact>
           <Events />
@@ -58,6 +61,9 @@ function App() {
       <Switch>
         <Route path="/" exact>
           <Home />
+        </Route>
+        <Route path="/more" exact>
+          <More />
         </Route>
         <Route path="/auth" exact>
           <Auth />

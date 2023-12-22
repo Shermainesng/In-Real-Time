@@ -78,6 +78,12 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("a user connected");
 
+  socket.on("poll_selected", (data) => {
+    const selectedPoll = data.globalState.selectedPoll;
+    console.log("different poll selected", selectedPoll);
+    io.emit("selected_poll_received", { selectedPoll });
+  });
+
   socket.on("result_updated", (data) => {
     const resultState = data.resultState;
     console.log("message emitted from backend", resultState);

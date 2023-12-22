@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useContext } from "react";
 import DisplayEvent from "../components/DisplayEvent";
-import Button from "../../shared/components/FormElements/Button";
+import { AiOutlinePlus } from "react-icons/ai";
 import NewEventDate from "../components/NewEventDate";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
@@ -56,29 +56,31 @@ export default function Events() {
   };
 
   return (
-    <div className="h-screen relative">
-      <div className="bg-purple px-40 absolute inset-0 items-center">
+    <div className="h-screen bg-purple  relative">
+      <div className="p-3 inset-0 items-center">
         {showNewEventPopup && (
-          <NewEventDate setShowNewEventPopup={setShowNewEventPopup} />
+          <div className="overlay">
+            <NewEventDate setShowNewEventPopup={setShowNewEventPopup} />
+          </div>
         )}
-        <div className="flex justify-between items-center justify-center">
+        <div className="flex flex-col md:flex-row justify-between items-center p-2">
           <div className="text-navy-blue text-3xl">active</div>
-          <div className="w-2/3 sm:w-1/3 md:w-1/3 px-3 text-left">
-            <Button
+          <div className="">
+            <div
               onClick={() => {
                 setShowNewEventPopup(true);
               }}
-              className="px-4"
-              yellow
+              className="border border-2 border-bright-yellow text-white rounded bg-navy-blue p-1 text-sm flex flex-row items-center"
             >
-              Create New Event
-            </Button>
+              <AiOutlinePlus />
+              create new event
+            </div>
           </div>
         </div>
         <div className="flex flex-col">
           {activeEvents.length > 0 &&
             activeEvents.map((event) => (
-              <div className="flex flex-col w-full sm:w-3/3 md:w-2/3 px-3">
+              <div className="flex flex-col w-full md:w-2/3 px-3">
                 <DisplayEvent
                   event={event}
                   onDelete={updateEventsAfterDelete}
@@ -89,7 +91,7 @@ export default function Events() {
           <div className="text-navy-blue text-3xl text-left">past</div>
           {pastEvents.length > 0 &&
             pastEvents.map((event) => (
-              <div className="flex flex-col w-full sm:w-3/3 md:w-2/3 px-3">
+              <div className="flex flex-col w-full md:w-2/3 px-3">
                 <DisplayEvent
                   event={event}
                   onDelete={updateEventsAfterDelete}
@@ -97,10 +99,12 @@ export default function Events() {
                 />
               </div>
             ))}
-          <p>
-            You have no events yet. Create a new event and start interacting
-            with your audience!
-          </p>
+          {pastEvents.length === 0 && activeEvents.length === 0 && (
+            <p>
+              You have no events yet. Create a new event and start interacting
+              with your audience!
+            </p>
+          )}
         </div>
       </div>
     </div>

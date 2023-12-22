@@ -16,7 +16,7 @@ export default function PollList(props) {
   }, [pollState]);
 
   return (
-    <div className="z-0 relative card flex-1 card bg-base-100 shadow-xl custom-max-height-70 overflow-y-auto">
+    <div className="z-0 relative flex-1 card bg-base-100 shadow-xl custom-max-height-70 w-full">
       <div className="card-body">
         {localPolls.length > 0 &&
           localPolls.map((poll) => (
@@ -24,6 +24,9 @@ export default function PollList(props) {
               <Poll poll={poll} />
             </div>
           ))}
+        {localPolls.length === 0 && (
+          <div>You have no polls yet. Start adding some!</div>
+        )}
       </div>
     </div>
   );

@@ -52,26 +52,27 @@ export default function Vote() {
     socket = io.connect("http://localhost:7005");
   }
 
-  // console.log("selected poll in Vote.js", globalState);
+  console.log("selected poll in Vote.js", globalState);
   //store state in localStorage whenever it changes
-  // useEffect(() => {
-  //   localStorage.setItem("selectedPoll", JSON.stringify(globalState));
-  // }, [globalState]);
-
   useEffect(() => {
-    if (!globalState.selectedPoll) {
-      const storedState = localStorage.getItem("selectedPoll");
-      if (storedState) {
-        console.log("from local storage", JSON.parse(storedState));
-        const selected = JSON.parse(storedState);
-        setSelectedPoll(selected.selectedPoll);
-      }
-    } else {
-      setSelectedPoll(globalState.selectedPoll);
-      console.log("saving in local storage", globalState);
-      localStorage.setItem("selectedPoll", JSON.stringify(globalState));
-    }
+    // localStorage.setItem("selectedPoll", JSON.stringify(globalState));
+    setSelectedPoll(globalState.selectedPoll);
   }, [globalState]);
+
+  // useEffect(() => {
+  //   if (!globalState.selectedPoll) {
+  //     const storedState = localStorage.getItem("selectedPoll");
+  //     if (storedState) {
+  //       console.log("from local storage", JSON.parse(storedState));
+  //       const selected = JSON.parse(storedState);
+  //       setSelectedPoll(selected.selectedPoll);
+  //     }
+  //   } else {
+  //     setSelectedPoll(globalState.selectedPoll);
+  //     console.log("saving in local storage", globalState);
+  //     localStorage.setItem("selectedPoll", JSON.stringify(globalState));
+  //   }
+  // }, [globalState]);
 
   useEffect(() => {
     socket.emit("result_updated", { resultState });
@@ -80,10 +81,17 @@ export default function Vote() {
   //listen to events and get updated results whenever results are updated
   useEffect(() => {
     socket.on("message_received", (data) => {
-      console.log("received from backend", data);
+      console.log("voting going on concurrently", data);
       setUpdatedResults(data.resultState.results);
       setUpdatedResponses(data.resultState.responses);
       setTotalVote(getTotalVoteCount(data.resultState.results));
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("selected_poll_received", (data) => {
+      console.log("selected poll received", data);
+      setSelectedPoll(data.selectedPoll);
     });
   }, [socket]);
 
@@ -96,7 +104,6 @@ export default function Vote() {
           responseData = await sendRequest(
             process.env.REACT_APP_BACKEND_URL + `/polls/${selectedPoll.id}`
           );
-          console.log("getting results from backend", responseData);
           resultDispatch({
             type: "SET_RESULTS",
             payload: responseData.pollResults,
@@ -163,64 +170,69 @@ export default function Vote() {
 
   return (
     <CustomContext.Provider value={providerState}>
-      <div className="h-screen flex items-center justify-center bg-purple">
-        <div className="h-50 w-full sm:w-3/3 md:w-2/3 border-2 border-navy-blue">
+      <div className="h-screen flex items-center justify-center bg-purple text-navy-blue">
+        <div className="h-50 w-full md:w-2/3 border-2 border-navy-blue">
           {!selectedPoll && (
-            <div>There are no active polls at the moment. </div>
+            <div className="p-3">
+              There are no active polls at the moment. The host will launch a
+              poll soon, sit tight!
+            </div>
           )}
-          <form onSubmit={handleSubmit}>
-            <div>{selectedPoll && selectedPoll.question}</div>
-            {selectedPoll &&
-              selectedPoll.options &&
-              selectedPoll.options.map((option, index) => (
+          {selectedPoll && (
+            <form onSubmit={handleSubmit}>
+              <div>{selectedPoll && selectedPoll.question}</div>
+              {selectedPoll &&
+                selectedPoll.options &&
+                selectedPoll.options.map((option, index) => (
+                  <div>
+                    <label>
+                      <input
+                        type="radio"
+                        name="option"
+                        value={index}
+                        onChange={(e) => setSelectedOptionIdx(e.target.value)}
+                        disabled={showResults}
+                      />
+                      {option}
+                      {showResults && updatedResults.length > 0 && (
+                        <div>
+                          <progress
+                            className="progress w-56"
+                            value={updatedResults[index]}
+                            max={totalVote}
+                          ></progress>
+                          <span>{updatedResults[index]}</span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                ))}
+              {/* <span>{totalVote}</span> */}
+              {selectedPoll && selectedPoll.type === "Free Text" && (
                 <div>
-                  <label>
-                    <input
-                      type="radio"
-                      name="option"
-                      value={index}
-                      onChange={(e) => setSelectedOptionIdx(e.target.value)}
-                      disabled={showResults}
-                    />
-                    {option}
-                    {showResults && updatedResults.length > 0 && (
-                      <div>
-                        <progress
-                          className="progress w-56"
-                          value={updatedResults[index]}
-                          max={totalVote}
-                        ></progress>
-                        <span>{updatedResults[index]}</span>
-                      </div>
-                    )}
-                  </label>
+                  {!showResults && (
+                    <textarea
+                      className="bg-white input input-bordered input-info w-2/3"
+                      id="response"
+                      name="response"
+                      value={response}
+                      rows="10"
+                      cols="20"
+                      placeholder="Type your answer..."
+                      onChange={(e) => setResponse(e.target.value)}
+                    ></textarea>
+                  )}
+                  {showResults &&
+                    updatedResponses &&
+                    updatedResponses.length > 0 &&
+                    updatedResponses.map((userResponse) => (
+                      <div>{userResponse}</div>
+                    ))}
                 </div>
-              ))}
-            {/* <span>{totalVote}</span> */}
-            {selectedPoll && selectedPoll.type === "Free Text" && (
-              <div>
-                {!showResults && (
-                  <textarea
-                    className="bg-white input input-bordered input-info w-2/3"
-                    id="response"
-                    name="response"
-                    value={response}
-                    rows="10"
-                    cols="20"
-                    placeholder="Type your answer..."
-                    onChange={(e) => setResponse(e.target.value)}
-                  ></textarea>
-                )}
-                {showResults &&
-                  updatedResponses &&
-                  updatedResponses.length > 0 &&
-                  updatedResponses.map((userResponse) => (
-                    <div>{userResponse}</div>
-                  ))}
-              </div>
-            )}
-            <button type="submit">Submit</button>
-          </form>
+              )}
+              <button type="submit">Submit</button>
+            </form>
+          )}
         </div>
       </div>
     </CustomContext.Provider>

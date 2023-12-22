@@ -4,7 +4,7 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import CustomContext from "../../shared/context/CustomContext";
 import { useCustomContext } from "../../shared/context/CustomContext";
 import { GlobalContext } from "../../shared/context/ContextProvider";
-
+import { useSocketEvent } from "../../shared/hooks/useSocketEvent";
 import io from "socket.io-client";
 
 function reducer(state, action) {
@@ -52,48 +52,38 @@ export default function Vote() {
     socket = io.connect("http://localhost:7005");
   }
 
-  console.log("selected poll in Vote.js", globalState);
-  //store state in localStorage whenever it changes
+  //check if Poll.js has stored global state in local storage
   useEffect(() => {
-    // localStorage.setItem("selectedPoll", JSON.stringify(globalState));
-    setSelectedPoll(globalState.selectedPoll);
+    console.log("global state in Vote.js", globalState);
+    if (!globalState.selectedPoll) {
+      const storedState = localStorage.getItem("selectedPoll");
+      if (storedState) {
+        console.log("retrieve from local storage");
+        const selected = JSON.parse(storedState);
+        setSelectedPoll(selected.selectedPoll);
+      }
+    } else {
+      setSelectedPoll(globalState.selectedPoll);
+    }
   }, [globalState]);
-
-  // useEffect(() => {
-  //   if (!globalState.selectedPoll) {
-  //     const storedState = localStorage.getItem("selectedPoll");
-  //     if (storedState) {
-  //       console.log("from local storage", JSON.parse(storedState));
-  //       const selected = JSON.parse(storedState);
-  //       setSelectedPoll(selected.selectedPoll);
-  //     }
-  //   } else {
-  //     setSelectedPoll(globalState.selectedPoll);
-  //     console.log("saving in local storage", globalState);
-  //     localStorage.setItem("selectedPoll", JSON.stringify(globalState));
-  //   }
-  // }, [globalState]);
 
   useEffect(() => {
     socket.emit("result_updated", { resultState });
   }, [resultState, resultDispatch]);
 
   //listen to events and get updated results whenever results are updated
-  useEffect(() => {
-    socket.on("message_received", (data) => {
-      console.log("voting going on concurrently", data);
-      setUpdatedResults(data.resultState.results);
-      setUpdatedResponses(data.resultState.responses);
-      setTotalVote(getTotalVoteCount(data.resultState.results));
-    });
-  }, [socket]);
+  const handleMessageReceived = (data) => {
+    setUpdatedResults(data.resultState.results);
+    setUpdatedResponses(data.resultState.responses);
+    setTotalVote(getTotalVoteCount(data.resultState.results));
+  };
 
-  useEffect(() => {
-    socket.on("selected_poll_received", (data) => {
-      console.log("selected poll received", data);
-      setSelectedPoll(data.selectedPoll);
-    });
-  }, [socket]);
+  const handleSelectedPollReceived = (data) => {
+    setSelectedPoll(data.selectedPoll);
+  };
+
+  useSocketEvent(socket, "message_received", handleMessageReceived);
+  useSocketEvent(socket, "selected_poll_received", handleSelectedPollReceived);
 
   //get results/responses when component first mounts
   useEffect(() => {

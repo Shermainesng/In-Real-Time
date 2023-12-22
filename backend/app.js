@@ -80,13 +80,13 @@ io.on("connection", (socket) => {
 
   socket.on("poll_selected", (data) => {
     const selectedPoll = data.globalState.selectedPoll;
-    console.log("different poll selected", selectedPoll);
+    console.log("different poll selected from backend", selectedPoll);
     io.emit("selected_poll_received", { selectedPoll });
   });
 
   socket.on("result_updated", (data) => {
     const resultState = data.resultState;
-    console.log("message emitted from backend", resultState);
+    console.log("results emitted from backend", resultState);
     io.emit("message_received", { resultState });
   });
 });

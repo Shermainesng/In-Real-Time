@@ -10,6 +10,7 @@ import FreeTextPoll from "./FreeTextPoll";
 import { FaPlayCircle } from "react-icons/fa";
 import { GlobalContext } from "../../shared/context/ContextProvider";
 import { FaCirclePause } from "react-icons/fa6";
+import { useSocketEvent } from "../../shared/hooks/useSocketEvent";
 
 import io from "socket.io-client";
 let socket;
@@ -59,9 +60,20 @@ const Poll = ({ poll }) => {
     if (globalState.selectedPoll) {
       setSelectedOne(globalState.selectedPoll.id);
     }
-    console.log("global state in poll.js", globalState);
+    ////store in local state so new tabs can access
     localStorage.setItem("selectedPoll", JSON.stringify(globalState)); //store in local state so new tabs can access
   }, [globalState, globalDispatch]);
+
+  //when results change - update the global state
+  const handleMessageReceived = (data) => {
+    if (globalState.selectedPoll) {
+      globalState.selectedPoll.results = data.resultState.results;
+    } else {
+      //edit the one stored in local storage
+    }
+  };
+
+  useSocketEvent(socket, "message_received", handleMessageReceived);
 
   useEffect(() => {
     window.addEventListener("click", handleClickOutside);
@@ -84,7 +96,6 @@ const Poll = ({ poll }) => {
     setShowDropdown(false);
   };
 
-  console.log("selectedOne", selectedOne);
   return (
     <React.Fragment>
       {showNewPoll && (

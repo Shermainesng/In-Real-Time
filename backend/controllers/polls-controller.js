@@ -32,6 +32,7 @@ const getPollById = async (req, res, next) => {
   let poll;
   try {
     poll = await Poll.findById(pollId);
+    console.log("FOUND POLL", poll);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find a place.",

@@ -24,7 +24,7 @@ function reducer(state, action) {
   }
 }
 
-export default function Vote() {
+export default function Vote(props) {
   const [resultState, resultDispatch] = useReducer(reducer, {
     results: [],
     responses: [],
@@ -37,7 +37,7 @@ export default function Vote() {
 
   const { globalState, globalDispatch } = useContext(GlobalContext);
   const [selectedPoll, setSelectedPoll] = useState(null);
-  const [showResults, setShowResults] = useState(false);
+  const [showResults, setShowResults] = useState(props.showResults || false);
   const [updatedResults, setUpdatedResults] = useState([]);
   const [response, setResponse] = useState("");
   const [updatedResponses, setUpdatedResponses] = useState([]);
@@ -67,23 +67,7 @@ export default function Vote() {
     }
   }, [globalState]);
 
-  useEffect(() => {
-    socket.emit("result_updated", { resultState });
-  }, [resultState, resultDispatch]);
-
-  //listen to events and get updated results whenever results are updated
-  const handleMessageReceived = (data) => {
-    setUpdatedResults(data.resultState.results);
-    setUpdatedResponses(data.resultState.responses);
-    setTotalVote(getTotalVoteCount(data.resultState.results));
-  };
-
-  const handleSelectedPollReceived = (data) => {
-    setSelectedPoll(data.selectedPoll);
-  };
-
-  useSocketEvent(socket, "message_received", handleMessageReceived);
-  useSocketEvent(socket, "selected_poll_received", handleSelectedPollReceived);
+  console.log("this is selected poll", selectedPoll);
 
   //get results/responses when component first mounts
   useEffect(() => {
@@ -102,12 +86,32 @@ export default function Vote() {
             type: "SET_RESPONSES",
             payload: responseData.poll.responses,
           });
-          // setTotalVote(getTotalVoteCount(responseData.pollResults));
+          console.log("GETTING RESULTS IN VOTE.JS", responseData);
         } catch (err) {}
       };
       getResults();
     }
   }, [selectedPoll]);
+
+  console.log("CURRENT RESULT STATE", resultState);
+
+  useEffect(() => {
+    socket.emit("result_updated", { resultState });
+  }, [resultState, resultDispatch]);
+
+  //listen to events and get updated results whenever results are updated
+  const handleMessageReceived = (data) => {
+    setUpdatedResults(data.resultState.results);
+    setUpdatedResponses(data.resultState.responses);
+    setTotalVote(getTotalVoteCount(data.resultState.results));
+  };
+
+  const handleSelectedPollReceived = (data) => {
+    setSelectedPoll(data.selectedPoll);
+  };
+
+  useSocketEvent(socket, "message_received", handleMessageReceived); //result state updated
+  useSocketEvent(socket, "selected_poll_received", handleSelectedPollReceived);
 
   //get the counts for that index, and update it (+1 to selected option)
   //   /:pollId/results
@@ -132,7 +136,6 @@ export default function Vote() {
             "Content-Type": "application/json",
           }
         );
-        console.log("results from update poll", responseData);
         resultDispatch({
           type: "SET_RESPONSES",
           payload: responseData.poll.responses,
@@ -155,6 +158,7 @@ export default function Vote() {
         sum += parseInt(resultsArr[i]);
       }
     }
+    console.log("getting total votes", sum);
     return sum;
   };
 
@@ -197,7 +201,7 @@ export default function Vote() {
                     </label>
                   </div>
                 ))}
-              {/* <span>{totalVote}</span> */}
+
               {selectedPoll && selectedPoll.type === "Free Text" && (
                 <div>
                   {!showResults && (

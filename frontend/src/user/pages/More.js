@@ -20,13 +20,13 @@ function More() {
             </p>
           </div>
 
-          <div className="flex w-full flex-col items-center md:w-2/3 mx-auto md:flex-row">
+          <div className="flex w-full flex-col items-center md:w-2/3 mx-auto md:flex-row mb-4">
             <div className="">
               <img
                 src="/phone.png"
                 alt="mockup of phone"
                 style={{
-                  width: "50vw",
+                  width: "30vw",
                 }}
               />
             </div>

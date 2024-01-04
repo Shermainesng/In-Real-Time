@@ -31,7 +31,7 @@ function reducer(state, action) {
       }
     case "DELETE_POLL":
       const filteredPolls = state.polls.filter(
-        (poll) => poll.id !== action.payload
+        (poll) => poll._id !== action.payload
       );
       return { ...state, polls: filteredPolls };
     default:

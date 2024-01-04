@@ -12,11 +12,14 @@ export default function PollList(props) {
   const [localPolls, setLocalPolls] = useState([]);
 
   useEffect(() => {
-    setLocalPolls(pollState.polls || []);
+    // setLocalPolls(pollState.polls || []);
+    setLocalPolls((prevLocalPolls) => pollState.polls || prevLocalPolls);
   }, [pollState]);
 
+  console.log(localPolls);
+
   return (
-    <div className="z-0 relative flex-1 card bg-base-100 shadow-xl custom-max-height-70 w-full">
+    <div className="z-0 relative flex-1 card bg-base-100 shadow-xl custom-max-height-70">
       <div className="card-body">
         <div className="text-sm">
           Click on the play button to make your poll visible for your guests.
@@ -24,7 +27,7 @@ export default function PollList(props) {
         </div>
         {localPolls.length > 0 &&
           localPolls.map((poll) => (
-            <div key={poll.id}>
+            <div key={poll._id}>
               <Poll poll={poll} />
             </div>
           ))}

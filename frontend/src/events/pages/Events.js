@@ -63,7 +63,7 @@ export default function Events() {
             <NewEventDate setShowNewEventPopup={setShowNewEventPopup} />
           </div>
         )}
-        <div className="flex flex-col md:flex-row justify-between items-center p-2">
+        <div className="flex flex-col flex-row justify-between items-center">
           <div className="text-navy-blue text-3xl">active</div>
           <div className="">
             <div
@@ -88,6 +88,9 @@ export default function Events() {
                 />
               </div>
             ))}
+          {activeEvents.length == 0 && (
+            <div>No active events. Add an event today!</div>
+          )}
           <div className="text-navy-blue text-3xl text-left">past</div>
           {pastEvents.length > 0 &&
             pastEvents.map((event) => (

@@ -7,7 +7,7 @@ export default function EventPageContent({ eventId }) {
   return (
     // <CustomContext.Provider value={providerState}>
     <div className="flex flex-col md:flex-row justify-between items-center mb-3">
-      {<PollList />}
+      <PollList />
       <LiveView eventId={eventId} />
     </div>
     // </CustomContext.Provider>

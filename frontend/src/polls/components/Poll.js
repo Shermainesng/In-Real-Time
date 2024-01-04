@@ -28,7 +28,9 @@ const Poll = ({ poll }) => {
   const [showNewPoll, setShowNewPoll] = useState(false);
   const [selectedOne, setSelectedOne] = useState("");
   const { sendRequest } = useHttpClient();
-  const pollId = poll.id;
+  const pollId = poll._id;
+
+  console.log(pollId);
 
   const handleClickOutside = (e) => {
     if (showDropdown && !e.target.closest(".dropdown-icon")) {
@@ -89,6 +91,7 @@ const Poll = ({ poll }) => {
         process.env.REACT_APP_BACKEND_URL + `/polls/${pollId}`,
         "DELETE"
       );
+      console.log(responseData);
       pollDispatch({ type: "DELETE_POLL", payload: responseData.pollId });
     } catch (e) {
       console.log(e);
@@ -99,7 +102,7 @@ const Poll = ({ poll }) => {
   return (
     <React.Fragment>
       {showNewPoll && (
-        <div className="overlay">
+        <div className="overlay-half">
           <div className="w-full my-3 md:w-2/3 px-3 text-left">
             {poll.type === "Multiple Choice" && (
               <MultipleChoiceForm

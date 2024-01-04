@@ -47,25 +47,65 @@ export default function LiveView({ eventId }) {
     <div className=" flex-1 card bg-base-100 shadow-xl custom-max-height-70">
       <div className="card-body">
         {!selectedPoll && (
-          <div>
-            <h1>Launch your poll to gather responses</h1>
-            <p>Your event is now active</p>
-            <p>
-              Once you launch a poll, your participants can now vote with the
-              link below
-            </p>
-            <div>
-              <Link to={{ pathname: `/events/${eventId}/vote` }}>
-                <div className="flex flex-col items-center justify-center ">
-                  <QRCode
-                    value={`/events/${eventId}/vote`}
-                    className="w-2/3 md:w-2/3"
-                  />
+          <div className="selected-poll">
+            <div className="content-custom">
+              <h3>Launch your poll to gather responses</h3>
+              <p>Your event is now active</p>
+              <p>
+                Once you launch a poll, your participants can now vote with the
+                link below
+              </p>
+              <div className="flex flex-col w-50 mx-auto">
+                <Link to={{ pathname: `/events/${eventId}/vote` }}>
+                  <div className="flex flex-col items-center justify-center ">
+                    <QRCode
+                      // value={`/events/${eventId}/vote`}
+                      value={generateLink()}
+                      className="w-2/3 md:w-2/3"
+                    />
+                  </div>
+                </Link>
+                <div>
+                  If the QR code doesn't work, you can copy the link here:
                 </div>
-              </Link>
-              <div>
-                If the QR code doesn't work, you can copy the link here:
+                <button
+                  className="p-2 bg-white border rounded"
+                  onClick={() => copyLinkToClipboard(`/events/${eventId}/vote`)}
+                >
+                  Share link
+                </button>
+                {showAlert && (
+                  <div className="w-50 mx-auto">
+                    <div role="alert" className="alert shadow-sm">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        className="stroke-info shrink-0 w-3 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      <div>
+                        <div className="text-xs">Link copied to clipboard</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
+            </div>
+          </div>
+        )}
+
+        {selectedPoll && (
+          <div className="selected-poll">
+            <DisplayResults />
+            <div className="border border-1 border-solid border-navy-blue">
+              <div>Participants can vote with the link</div>
               <button
                 className="p-2 bg-white border rounded"
                 onClick={() => copyLinkToClipboard(`/events/${eventId}/vote`)}
@@ -97,24 +137,7 @@ export default function LiveView({ eventId }) {
             </div>
           </div>
         )}
-
-        {selectedPoll && (
-          <div className="selected-poll">
-            <h2>{selectedPoll.question}</h2>
-            <DisplayResults />
-            <div className="border border-1 border-solid border-navy-blue">
-              <div>Participants can vote with the link</div>
-              <button
-                className="p-2 bg-white border rounded"
-                onClick={() => copyLinkToClipboard(`/events/${eventId}/vote`)}
-              >
-                Share link
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
-    // </div>
   );
 }

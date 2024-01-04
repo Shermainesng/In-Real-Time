@@ -24,7 +24,7 @@ function reducer(state, action) {
   }
 }
 
-export default function Vote(props) {
+export default function Vote() {
   const [resultState, resultDispatch] = useReducer(reducer, {
     results: [],
     responses: [],
@@ -37,7 +37,7 @@ export default function Vote(props) {
 
   const { globalState, globalDispatch } = useContext(GlobalContext);
   const [selectedPoll, setSelectedPoll] = useState(null);
-  const [showResults, setShowResults] = useState(props.showResults || false);
+  const [showResults, setShowResults] = useState(false);
   const [updatedResults, setUpdatedResults] = useState([]);
   const [response, setResponse] = useState("");
   const [updatedResponses, setUpdatedResponses] = useState([]);
@@ -68,6 +68,7 @@ export default function Vote(props) {
   }, [globalState]);
 
   console.log("this is selected poll", selectedPoll);
+  console.log("this is result state", resultState);
 
   //get results/responses when component first mounts
   useEffect(() => {
@@ -76,7 +77,7 @@ export default function Vote(props) {
         let responseData;
         try {
           responseData = await sendRequest(
-            process.env.REACT_APP_BACKEND_URL + `/polls/${selectedPoll.id}`
+            process.env.REACT_APP_BACKEND_URL + `/polls/${selectedPoll._id}`
           );
           resultDispatch({
             type: "SET_RESULTS",
@@ -86,14 +87,11 @@ export default function Vote(props) {
             type: "SET_RESPONSES",
             payload: responseData.poll.responses,
           });
-          console.log("GETTING RESULTS IN VOTE.JS", responseData);
         } catch (err) {}
       };
       getResults();
     }
   }, [selectedPoll]);
-
-  console.log("CURRENT RESULT STATE", resultState);
 
   useEffect(() => {
     socket.emit("result_updated", { resultState });
@@ -108,6 +106,7 @@ export default function Vote(props) {
 
   const handleSelectedPollReceived = (data) => {
     setSelectedPoll(data.selectedPoll);
+    setShowResults(false);
   };
 
   useSocketEvent(socket, "message_received", handleMessageReceived); //result state updated
@@ -126,7 +125,7 @@ export default function Vote(props) {
       }
       try {
         const responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + `/polls/${selectedPoll.id}`,
+          process.env.REACT_APP_BACKEND_URL + `/polls/${selectedPoll._id}`,
           "PATCH",
           JSON.stringify({
             response,
@@ -158,7 +157,6 @@ export default function Vote(props) {
         sum += parseInt(resultsArr[i]);
       }
     }
-    console.log("getting total votes", sum);
     return sum;
   };
 
@@ -216,15 +214,19 @@ export default function Vote(props) {
                       onChange={(e) => setResponse(e.target.value)}
                     ></textarea>
                   )}
-                  {showResults &&
-                    updatedResponses &&
-                    updatedResponses.length > 0 &&
-                    updatedResponses.map((userResponse) => (
-                      <div>{userResponse}</div>
-                    ))}
+                  {showResults && (
+                    <div>
+                      Responses from the audience:
+                      {updatedResponses &&
+                        updatedResponses.length > 0 &&
+                        updatedResponses.map((userResponse) => (
+                          <div>{userResponse}</div>
+                        ))}
+                    </div>
+                  )}
                 </div>
               )}
-              <button type="submit">Submit</button>
+              {!showResults && <button type="submit">Submit</button>}
             </form>
           )}
         </div>

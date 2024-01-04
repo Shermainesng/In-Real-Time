@@ -52,6 +52,7 @@ const getPollById = async (req, res, next) => {
   } else {
     pollResults = poll.results;
   }
+  console.log(pollResults);
   res.status(201).json({ poll, pollResults });
 };
 

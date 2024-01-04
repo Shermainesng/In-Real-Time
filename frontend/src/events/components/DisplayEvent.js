@@ -42,7 +42,6 @@ export default function DisplayEvent(props) {
   };
 
   const updateEventAfterUpdate = (startDate, endDate, name) => {
-    console.log("updated name in DisplayEvent", name);
     event.name = name;
     event.startDate = startDate;
     event.endDate = endDate;

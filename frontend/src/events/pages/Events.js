@@ -5,6 +5,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import NewEventDate from "../components/NewEventDate";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
+import "../components/NewEventDate.css";
 
 export default function Events() {
   const [showNewEventPopup, setShowNewEventPopup] = useState(false);
@@ -59,9 +60,9 @@ export default function Events() {
     <div className="h-screen bg-purple  relative">
       <div className="p-3 inset-0 items-center">
         {showNewEventPopup && (
-          <div className="overlay">
-            <NewEventDate setShowNewEventPopup={setShowNewEventPopup} />
-          </div>
+          // <div className="overlay-event">
+          <NewEventDate setShowNewEventPopup={setShowNewEventPopup} />
+          // </div>
         )}
         <div className="flex flex-col flex-row justify-between items-center">
           <div className="text-navy-blue text-3xl">active</div>

@@ -30,8 +30,6 @@ const Poll = ({ poll }) => {
   const { sendRequest } = useHttpClient();
   const pollId = poll._id;
 
-  console.log(pollId);
-
   const handleClickOutside = (e) => {
     if (showDropdown && !e.target.closest(".dropdown-icon")) {
       setShowDropdown(false);
@@ -40,7 +38,8 @@ const Poll = ({ poll }) => {
   //when poll is launched
   const handleSelectPoll = (selectedPoll) => {
     //if same poll selected again, pause it
-    if (selectedPoll.id === selectedOne) {
+    console.log("poll in handleSelectPoll", selectedPoll);
+    if (selectedPoll._id === selectedOne) {
       localStorage.removeItem("selectedPoll");
       setSelectedOne("");
       globalDispatch({
@@ -60,7 +59,8 @@ const Poll = ({ poll }) => {
     socket.emit("poll_selected", { globalState });
 
     if (globalState.selectedPoll) {
-      setSelectedOne(globalState.selectedPoll.id);
+      console.log("poll in line 62", globalState.selectedPoll);
+      setSelectedOne(globalState.selectedPoll._id);
     }
     ////store in local state so new tabs can access
     localStorage.setItem("selectedPoll", JSON.stringify(globalState)); //store in local state so new tabs can access
@@ -136,12 +136,12 @@ const Poll = ({ poll }) => {
                 <button onClick={() => handleSelectPoll(poll)}>
                   <div
                     className={
-                      selectedOne === poll.id
+                      selectedOne === poll._id
                         ? "icon-pause text-red-500 text-2xl"
                         : "icon-play text-navy-blue text-2xl"
                     }
                   >
-                    {selectedOne === poll.id ? (
+                    {selectedOne === poll._id ? (
                       <FaCirclePause />
                     ) : (
                       <FaPlayCircle />

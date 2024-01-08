@@ -9,6 +9,7 @@ import {
 import "bootstrap/dist/css/bootstrap.css";
 
 import Navigation from "./ui/Navbar";
+// import Navigation from "./ui/NavMenu";
 import Home from "./Home";
 import Events from "./events/pages/Events";
 import Auth from "./user/pages/Auth";

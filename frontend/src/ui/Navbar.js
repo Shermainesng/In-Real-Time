@@ -171,8 +171,26 @@ const Navigation = (props) => {
           </div>
 
           <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pb-3 pt-2">
+            <div className="space-y-1 flex flex-col px-2 pb-3 pt-2">
               {navigationItems.map((item) => (
+                <div
+                  key={item.name}
+                  className={classNames("rounded-md me-4 text-navy-blue")}
+                  aria-current={item.current ? "page" : undefined}
+                  onClick={() => handleLinkClick(item.index)}
+                >
+                  <NavLink
+                    className={classNames(
+                      "no-underline hover-underline-animation",
+                      item.current ? "bg-light-green" : ""
+                    )}
+                    to={item.href}
+                  >
+                    {item.name}
+                  </NavLink>
+                </div>
+              ))}
+              {/* {navigationItems.map((item) => (
                 <Disclosure.Button
                   key={item.name}
                   as="a"
@@ -187,7 +205,7 @@ const Navigation = (props) => {
                 >
                   {item.name}
                 </Disclosure.Button>
-              ))}
+              ))} */}
             </div>
           </Disclosure.Panel>
         </>

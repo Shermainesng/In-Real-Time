@@ -1,7 +1,7 @@
 .hover-underline-animation {
     display: inline-block;
     position: relative;
-    color: #FBB5ED;
+    /* color: #FBB5ED; */
   }
   
   .hover-underline-animation::after {
@@ -13,6 +13,7 @@
     bottom: 0;
     left: 0;
     background-color: #FBB5ED;
+
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
   }

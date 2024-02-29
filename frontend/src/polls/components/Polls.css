@@ -17,6 +17,45 @@ ul {
     max-height: 40rem;
   }
 
+  .custom-min-width {
+    min-width: 600px !important;
+  }
+
+  /* For extra small screens (xs) */
+@media (min-width: 0px) {
+  .custom-min-width {
+    min-width: 540px !important; /* Adjust as needed for xs screens */
+  }
+}
+
+/* For small screens (sm) */
+@media (min-width: 640px) {
+  .custom-min-width {
+    min-width: 475px !important; /* Adjust as needed for sm screens */
+  }
+}
+
+/* For medium screens (md) */
+@media (min-width: 768px) {
+  .custom-min-width {
+    min-width: 315px !important; /* Adjust as needed for md screens */
+  }
+}
+
+
+/* For large screens (lg) */
+@media (min-width: 1024px) {
+  .custom-min-width {
+    min-width: 430px !important; /* Adjust as needed for lg screens */
+  }
+}
+
+/* For extra large screens (xl) */
+@media (min-width: 1280px) {
+  .custom-min-width {
+    min-width: 550px !important; /* Adjust as needed for xl screens */
+  }
+}
 /* .poll-card:hover {
   background-color: #D3FF56
   ;

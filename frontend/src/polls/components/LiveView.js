@@ -4,6 +4,7 @@ import QRCode from "react-qr-code";
 import { GlobalContext } from "../../shared/context/ContextProvider";
 import { Link } from "react-router-dom";
 import DisplayResults from "./DisplayResults";
+import "./Polls.css";
 
 export default function LiveView({ eventId }) {
   const { globalState } = useContext(GlobalContext);
@@ -44,10 +45,13 @@ export default function LiveView({ eventId }) {
   //whenever we select a different poll to launch, <Vote> will access that selected poll and render that poll for users to vote
   return (
     // <div className="relative">
-    <div className=" flex-1 card bg-base-100 shadow-xl custom-max-height-70">
-      <div className="card-body">
+    <div
+      className=" flex-1 card bg-base-100 shadow-xl custom-max-height-70 custom-min-width"
+      // style={{ minWidth: 600 }}
+    >
+      <div className="card-body ">
         {!selectedPoll && (
-          <div className="selected-poll">
+          <div className="selected-poll ">
             <div className="content-custom">
               <h3>Launch your poll to gather responses</h3>
               <p>Your event is now active</p>

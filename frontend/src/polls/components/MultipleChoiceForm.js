@@ -62,7 +62,7 @@ export default function MultipleChoiceForm({ setShowNewPoll, editMode, poll }) {
         //after updating, need update the pollState and the selected poll
         const updatedPoll = responseData.poll;
         pollDispatch({ type: "UPDATE_POLL", payload: updatedPoll });
-        pollDispatch({ type: "SELECT_POLL", payload: updatedPoll });
+        // pollDispatch({ type: "SELECT_POLL", payload: updatedPoll });
       } else {
         responseData = await sendRequest(
           process.env.REACT_APP_BACKEND_URL + `/polls/${eventId}/new`,

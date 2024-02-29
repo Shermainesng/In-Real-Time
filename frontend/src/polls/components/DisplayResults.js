@@ -3,6 +3,7 @@ import { GlobalContext } from "../../shared/context/ContextProvider";
 import { useSocketEvent } from "../../shared/hooks/useSocketEvent";
 import io from "socket.io-client";
 import { TbSumOff } from "react-icons/tb";
+import "./Polls.css";
 
 let socket;
 if (process.env.NODE_ENV === "production") {
@@ -54,10 +55,10 @@ function DisplayResults() {
   };
 
   return (
-    <div>
+    <div className="content-custom">
       {selectedPoll && selectedPoll.type === "Multiple Choice" && (
         <div>
-          <h3>{selectedPoll.question}</h3>
+          <h2>{selectedPoll.question}</h2>
           <br />
           {getTotalVotes()} votes received
           <div>
@@ -90,7 +91,7 @@ function DisplayResults() {
 
       {selectedPoll && selectedPoll.type === "Free Text" && (
         <div>
-          <h3>{selectedPoll.question}</h3>
+          <div>{selectedPoll.question}</div>
           <br />
           Responses:
           {responses &&

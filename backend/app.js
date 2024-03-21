@@ -9,10 +9,13 @@ const { Server } = require("socket.io");
 const usersRoutes = require("./api/users");
 const eventsRoutes = require("./api/events");
 const pollsRoutes = require("./api/polls");
+const questionsRoutes = require("./api/questions");
 const HttpError = require("./models/http-error");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // if (process.env.ENV === "dev") require("dotenv").config();
+
+//CORS
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -32,6 +35,7 @@ mongoose.connection.once("open", () => {
 app.use("/api/events", eventsRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/polls", pollsRoutes);
+app.use("/api/questions", questionsRoutes);
 
 //error handling for undefined routes
 app.use((req, res, next) => {

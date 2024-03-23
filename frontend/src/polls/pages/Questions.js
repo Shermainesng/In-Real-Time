@@ -3,13 +3,12 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import Question from "../components/Question";
-import { useQueryClient } from "react-query";
 
 export default function Questions() {
   const [questionText, setQuestionText] = useState("");
   const [author, setAuthor] = useState("");
   const [questions, setQuestions] = useState([]);
-  const [newQuestion, setNewQuestion] = useState(null);
+  const [newQuestionCreated, setNewQuestionCreated] = useState(false);
   const eventId = useParams().eventId.toString();
   const { sendRequest } = useHttpClient();
 
@@ -21,7 +20,6 @@ export default function Questions() {
     setQuestionText("");
     setAuthor("");
   };
-  console.log("questions", questions);
 
   //method to create new question
   const createNewQuestion = async () => {
@@ -37,10 +35,7 @@ export default function Questions() {
           "Content-Type": "application/json",
         }
       );
-
-      const newQuestion = responseData.question;
-      setNewQuestion(responseData.question);
-      console.log("new qns", newQuestion);
+      setNewQuestionCreated(true);
     } catch (err) {
       console.log(err);
     }
@@ -49,17 +44,19 @@ export default function Questions() {
   //always fetching questions to display on screen
   useEffect(() => {
     const getAllQuestions = async () => {
+      console.log("get all questions");
       try {
         const responseData = await sendRequest(
           process.env.REACT_APP_BACKEND_URL + `/questions/${eventId}/questions`
         );
         setQuestions(responseData.questions);
+        setNewQuestionCreated(false);
       } catch (err) {
         console.log(err);
       }
     };
     getAllQuestions();
-  }, [createNewQuestion]);
+  }, [newQuestionCreated]);
 
   return (
     <div className="min-h-screen flex flex-col items-center  bg-purple text-navy-blue">

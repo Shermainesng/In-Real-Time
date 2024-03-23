@@ -7,5 +7,10 @@ const router = express.Router();
 
 router.post("/:eventId/new", questionController.createQuestion);
 router.get("/:eventId/questions", questionController.getAllQuestionByEventId);
+router.post("/:questionId/responses/new", questionController.createResponse);
+router.get(
+  "/:questionId/responses",
+  questionController.getResponsesByQuestionId
+);
 
 module.exports = router;

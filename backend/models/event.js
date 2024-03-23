@@ -10,6 +10,9 @@ const eventSchema = new Schema({
   name: { type: String, required: true },
   creator: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
   polls: [{ type: mongoose.Types.ObjectId, required: false, ref: "Poll" }],
+  questions: [
+    { type: mongoose.Types.ObjectId, required: false, ref: "Question" },
+  ],
 });
 
 // eventSchema.plugin(uniqueValidator);

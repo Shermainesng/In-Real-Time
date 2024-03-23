@@ -6,6 +6,9 @@ import { useCustomContext } from "../../shared/context/CustomContext";
 import { GlobalContext } from "../../shared/context/ContextProvider";
 import { useSocketEvent } from "../../shared/hooks/useSocketEvent";
 import io from "socket.io-client";
+import ModeTabs from "../components/ModeTabs";
+import { Button } from "@mui/material";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -52,6 +55,8 @@ export default function Vote() {
     socket = io.connect("http://localhost:7005");
   }
 
+  const eventId = useParams().eventId;
+
   //check if Poll.js has stored global state in local storage
   useEffect(() => {
     console.log("global state in Vote.js", globalState);
@@ -66,9 +71,6 @@ export default function Vote() {
       setSelectedPoll(globalState.selectedPoll);
     }
   }, [globalState]);
-
-  console.log("this is selected poll", selectedPoll);
-  console.log("this is result state", resultState);
 
   //get results/responses when component first mounts
   useEffect(() => {
@@ -163,11 +165,16 @@ export default function Vote() {
   return (
     <CustomContext.Provider value={providerState}>
       <div className="h-screen flex items-center justify-center bg-purple text-navy-blue">
-        <div className="h-50 w-full md:w-2/3 border-2 border-navy-blue">
+        <div className="h-50 w-3/4 md:w-2/3 border-2 border-navy-blue">
           {!selectedPoll && (
-            <div className="p-3">
+            <div className="p-3 flex-col">
               There are no active polls at the moment. The host will launch a
               poll soon, sit tight!
+              <div>
+                <Link to={`/events/${eventId}/questions`}>
+                  <Button variant="outlined">Go to Q&A</Button>
+                </Link>
+              </div>
             </div>
           )}
           {selectedPoll && (

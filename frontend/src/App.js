@@ -24,6 +24,7 @@ import { useAuth } from "../src/shared/hooks/auth-hook";
 import { initialState, reducer } from "./shared/context/reducer";
 import { GlobalContextProvider } from "./shared/context/ContextProvider";
 import More from "./user/pages/More";
+import ModeTabs from "./polls/components/ModeTabs";
 
 function App() {
   const { token, login, logout, userId, userName } = useAuth();
@@ -51,8 +52,11 @@ function App() {
         <Route path="/events/:eventId" exact>
           <Event />
         </Route>
-        <Route path="/events/:pollId/vote" exact>
-          <Vote />
+        <Route path="/events/:eventId/vote" exact>
+          <ModeTabs />
+        </Route>
+        <Route path="/events/:eventId/questions" exact>
+          <ModeTabs />
         </Route>
         <Redirect to="/" />
       </Switch>
@@ -70,7 +74,10 @@ function App() {
           <Auth />
         </Route>
         <Route path="/events/:eventId/vote" exact>
-          <Vote />
+          <ModeTabs />
+        </Route>
+        <Route path="/events/:eventId/questions" exact>
+          <ModeTabs />
         </Route>
         <Route path="/about" exact></Route>
         <Redirect to="/auth" />

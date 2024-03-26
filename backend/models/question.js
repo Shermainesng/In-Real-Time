@@ -4,8 +4,9 @@ const Schema = mongoose.Schema;
 
 //replies and responses are embedded within the questions collection as subdocuments - don't need separate collections
 const replySchema = new mongoose.Schema({
-  replyText: { type: String, required: true },
+  responseText: { type: String, required: true },
   author: { type: String, required: false },
+  isReply: { type: Boolean, required: true },
 });
 
 const responseSchema = new mongoose.Schema({

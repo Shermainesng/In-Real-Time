@@ -74,62 +74,41 @@ function Question({ question }) {
       console.log(responseData);
       setShowReplyForm(false);
       setNewResponseAdded(true);
+      setResponseText("");
+      setResponseAuthor("");
     } catch (err) {}
   };
   return (
     <div>
       <Card sx={{ marginTop: 2 }}>
         <div className="flex justify-between items-end">
-          <div>
-            <CardHeader
-              sx={{ textAlign: "left", padding: 1, flex: "1" }}
-              title={
-                <Typography variant="subtitle1" sx={{ lineHeight: 1 }}>
-                  {question.questionText}
+          {/* <div> */}
+          <div class="flex flex-col items-start border-b border-gray-200 py-2 px-2">
+            {/* <div class="flex-grow text-left"> */}
+            <p class="text-lg leading-tight mb-0">{question.questionText}</p>
+            {/* </div> */}
+            {/* <div class="flex flex-col text-right"> */}
+            <p class="text-sm text-gray-500 mb-0 ">By {question.author}</p>
+            <p class="text-xs text-gray-500 mb-0">Posted {timeText}</p>
+            {/* </div> */}
+            {responses.length > 0 && (
+              <button
+                className="flex items-center cursor-pointer text-navy-blue"
+                onClick={() => setExpandResponses(!expandResponses)}
+              >
+                <MdExpandMore />
+                <Typography variant="subtitle2">
+                  {responses.length} replies
                 </Typography>
-              }
-              subheader={
-                <div style={{ lineHeight: 0 }}>
-                  <Typography
-                    variant="caption"
-                    sx={{ paddingBottom: 0, marginBottom: 0 }}
-                  >
-                    Posted by {question.author}
-                  </Typography>
-                  <br />
-                  <Typography
-                    variant="caption"
-                    sx={{ paddingBottom: 0, marginBottom: 0 }}
-                  >
-                    {timeText}
-                  </Typography>
-                  {responses.length > 0 && (
-                    <button
-                      className="flex items-center cursor-pointer text-navy-blue"
-                      onClick={() => setExpandResponses(!expandResponses)}
-                    >
-                      <MdExpandMore />
-                      <Typography variant="subtitle2">
-                        {responses.length} replies
-                      </Typography>
-                    </button>
-                  )}
-                </div>
-              }
-            />
+              </button>
+            )}
           </div>
+          {/* </div> */}
           <Button onClick={() => setShowReplyForm(true)}>
             <Typography sx={{ margin: 1 }}>Reply</Typography>
           </Button>
         </div>
       </Card>
-      {expandResponses && (
-        <div className="flex flex-col items-end">
-          {responses.map((response, index) => (
-            <Response response={response} key={response.id} />
-          ))}
-        </div>
-      )}
       {showReplyForm && (
         <div>
           <form className="my-2">
@@ -164,6 +143,13 @@ function Question({ question }) {
               </Button>
             </div>
           </form>
+        </div>
+      )}
+      {expandResponses && (
+        <div className="flex flex-col items-end">
+          {responses.map((response, index) => (
+            <Response response={response} key={response.id} />
+          ))}
         </div>
       )}
     </div>

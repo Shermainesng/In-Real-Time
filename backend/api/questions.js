@@ -12,5 +12,7 @@ router.get(
   "/:questionId/responses",
   questionController.getResponsesByQuestionId
 );
+router.post("/:responseId/replies/new", questionController.createReply);
+router.get("/:responseId/replies", questionController.getRepliesByResponseId);
 
 module.exports = router;

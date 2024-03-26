@@ -59,7 +59,7 @@ export default function Questions() {
   }, [newQuestionCreated]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center  bg-purple text-navy-blue">
+    <div className="min-h-screen flex flex-col items-center  bg-purple text-navy-blue pb-5">
       <form className="pt-5 w-3/4 md:w-1/2" onSubmit={handleSubmit}>
         <input
           type="text"
@@ -81,14 +81,14 @@ export default function Questions() {
         />
         <Button type="submit">Send</Button>
       </form>
-      <div className=" pt-3 flex flex-col items-center">
+      <div className=" pt-3 flex flex-col items-center w-full md:w-3/4">
         <h2>Questions from the audience:</h2>
-        <div className="flex-col w-3/4 md:w-full">
+        <div className="flex-col w-full px-3">
           {questions &&
             questions.length > 0 &&
             questions.map((qns) => (
               <div>
-                <Question question={qns} />
+                <Question question={qns} key={qns.id} />
               </div>
             ))}
         </div>

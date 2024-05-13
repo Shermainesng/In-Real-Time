@@ -90,7 +90,7 @@ export default function Event() {
 
   return (
     <CustomContext.Provider value={providerState}>
-      <div className="fixed top-0 left-0 w-full bg-purple px-10 sm:px-20 md:px-30 relative flex flex-col items-center py-4">
+      <div className="fixed top-0 left-0 w-full bg-purple px-10 sm:px-20 md:px-30 relative flex flex-col items-center pt-4 h-full">
         <div>{event.name}</div>
         <div className="dropdown dropdown-hover">
           <div>

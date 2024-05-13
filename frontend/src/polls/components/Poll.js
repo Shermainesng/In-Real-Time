@@ -63,7 +63,7 @@ const Poll = ({ poll }) => {
       setSelectedOne(globalState.selectedPoll._id);
     }
     ////store in local state so new tabs can access
-    localStorage.setItem("selectedPoll", JSON.stringify(globalState)); //store in local state so new tabs can access
+    localStorage.setItem("selectedPoll", JSON.stringify(globalState));
   }, [globalState, globalDispatch]);
 
   //when results change - update the global state

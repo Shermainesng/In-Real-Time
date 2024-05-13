@@ -41,7 +41,9 @@ export default function Vote() {
   const { globalState, globalDispatch } = useContext(GlobalContext);
   const [selectedPoll, setSelectedPoll] = useState(null);
   const [showResults, setShowResults] = useState(false);
+
   const [updatedResults, setUpdatedResults] = useState([]);
+
   const [response, setResponse] = useState("");
   const [updatedResponses, setUpdatedResponses] = useState([]);
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
@@ -81,10 +83,11 @@ export default function Vote() {
           responseData = await sendRequest(
             process.env.REACT_APP_BACKEND_URL + `/polls/${selectedPoll._id}`
           );
-          resultDispatch({
-            type: "SET_RESULTS",
-            payload: responseData.pollResults,
-          });
+          // resultDispatch({
+          //   type: "SET_RESULTS",
+          //   payload: responseData.pollResults,
+          // });
+          setUpdatedResults(responseData.pollResults);
           resultDispatch({
             type: "SET_RESPONSES",
             payload: responseData.poll.responses,
@@ -97,19 +100,19 @@ export default function Vote() {
 
   //everytime results are updated, emit updated state to backend
   useEffect(() => {
-    console.log("dispatch is called, state updated", resultState);
-    socket.emit("result_updated", { resultState });
-  }, [resultState, resultDispatch]);
+    console.log("results are updated, emitting to backend", updatedResults);
+    socket.emit("result_updated", { updatedResults });
+  }, [updatedResults]);
 
   //listen to events and get updated results whenever results are updated
   const handleMessageReceived = (data) => {
     console.log(
       "after backend response in handleMessageReceived",
-      data.resultState
+      data.emittedResults
     );
-    setUpdatedResults(data.resultState.results);
-    setUpdatedResponses(data.resultState.responses);
-    setTotalVote(getTotalVoteCount(data.resultState.results));
+    setUpdatedResults(data.emittedResults);
+    // setUpdatedResponses(data.resultState.responses);
+    setTotalVote(getTotalVoteCount(data.emittedResults));
   };
 
   const handleSelectedPollReceived = (data) => {
@@ -156,10 +159,11 @@ export default function Vote() {
           payload: responseData.poll.responses,
         });
         console.log("to update result dispatch", responseData.poll.results);
-        resultDispatch({
-          type: "SET_RESULTS",
-          payload: responseData.poll.results,
-        });
+        // resultDispatch({
+        //   type: "SET_RESULTS",
+        //   payload: responseData.poll.results,
+        // });
+        setUpdatedResults(responseData.poll.results);
       } catch (err) {
         console.log(err);
       }
@@ -174,13 +178,12 @@ export default function Vote() {
         sum += parseInt(resultsArr[i]);
       }
     }
-    console.log("votes in getTotalVotecount", sum);
     return sum;
   };
 
   console.log("updated result usestate", updatedResults);
   console.log("votes use state", totalVote);
-  console.log("result state", resultState);
+  // console.log("result state", resultState);
   return (
     <CustomContext.Provider value={providerState}>
       <div className="h-screen flex items-center justify-center bg-purple text-navy-blue">

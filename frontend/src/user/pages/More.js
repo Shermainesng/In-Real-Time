@@ -9,7 +9,7 @@ function More() {
     <div>
       <div className=" w-full">
         <div className="bg-pink h-full flex flex-col items-start">
-          <div className="text-navy-blue w-2/3 mx-auto py-4">
+          <div className="text-navy-blue w-2/3 mx-auto py-5">
             <div className="text-5xl pb-3">
               Easy and flexible online polling for any use case
             </div>
@@ -26,7 +26,8 @@ function More() {
                 src="/phone.png"
                 alt="mockup of phone"
                 style={{
-                  width: "30vw",
+                  width: "200px",
+                  height: "350px",
                 }}
               />
             </div>
@@ -48,8 +49,8 @@ function More() {
                 name
               </div>
             </div>
-            <div className="border border-3 py-4 flex flex-column items-center justify-center text-navy-blue">
-              <TbRosetteNumber2 className="text-2xl " />
+            <div className="border border-3 py-4 flex flex-column items-center text-navy-blue px-3">
+              <TbRosetteNumber2 className="text-2xl bold" />
               <div className="text-bold text-2xl">
                 Create polls for your event
               </div>
@@ -59,8 +60,8 @@ function More() {
                 free text polls
               </div>
             </div>
-            <div className="border border-3 py-4 flex flex-column items-center justify-center text-navy-blue">
-              <TbRosetteNumber3 className="text-lg " />
+            <div className="border border-3 py-4 flex flex-column items-center text-navy-blue px-3">
+              <TbRosetteNumber3 className="text-2xl bold" />
               <div className="text-bold text-2xl">Launch your poll!</div>
               <div>
                 During the event, share the link that is provided on your event
@@ -71,7 +72,7 @@ function More() {
           </div>
         </div>
 
-        <div className="bg-purple w-full h-full">
+        {/* <div className="bg-purple w-full h-full">
           <div>Capture and show results live</div>
           <div>
             Let your participants vote from any device using a link or QR code
@@ -81,7 +82,7 @@ function More() {
 
         <div className="bg-navy-blue">
           <div>Make your next meeting more interactive with live polls.</div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

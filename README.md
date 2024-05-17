@@ -20,11 +20,11 @@ You will need to create a new account to start creating and launching polls. (Yo
 ## Create Event
 In the events page, click on the +create new event button 
 <br/>
-<img width="400" alt="image" src="https://github.com/Shermainesng/In-Real-Time/assets/61632019/8516179b-6a4d-44b7-bf93-1b4c8daf3cfe">
+<img width="300" height="400" alt="image" src="https://github.com/Shermainesng/In-Real-Time/assets/61632019/8516179b-6a4d-44b7-bf93-1b4c8daf3cfe">
 
 ## Create Polls
 - After creating an event, you can start adding polls. Polls can be either MCQ or free text formats.
-<img width="500" alt="image" src="https://github.com/Shermainesng/In-Real-Time/assets/61632019/189d7e92-7de7-480c-a705-50211595cb1e">
+<img width="400" alt="image" src="https://github.com/Shermainesng/In-Real-Time/assets/61632019/189d7e92-7de7-480c-a705-50211595cb1e">
 
 ## Launch Polls
 - When ready to launch polls, get guests connected by using their mobile devices to scan the QR code on the right, or share the link using the 'share link' button
@@ -34,7 +34,7 @@ In the events page, click on the +create new event button
 
 ## View Results
 - Once voters start sending in their votes, voters and hosts can view the results in real time:
-<img width="250" height="300" alt="image" src="https://github.com/Shermainesng/In-Real-Time/assets/61632019/b33d380e-1b6f-408b-8b93-da72bf556a74">
+<img width="300" height="400" alt="image" src="https://github.com/Shermainesng/In-Real-Time/assets/61632019/b33d380e-1b6f-408b-8b93-da72bf556a74">
 <img width="500" alt="image" src="https://github.com/Shermainesng/In-Real-Time/assets/61632019/46f37c0a-3690-4de0-8afa-0ee2af0bf6d5">
 
 
